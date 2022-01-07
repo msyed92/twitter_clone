@@ -125,3 +125,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# pem keys
+id_rsa_priv.pem
+id_rsa_pub.pem

@@ -1,8 +1,9 @@
 const express = require("express")
 const mountRoutes = require("./routes")
-//const cors = require("cors")
 const path = require("path")
-//const passport = require("passport")
+const passport = require("passport")
+const passportJWT = require("passport-jwt")
+const jwt = require("jsonwebtoken")
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -13,30 +14,29 @@ require("dotenv").config()
 
 // Create the Express application
 const app = express()
-mountRoutes(app)
-app.set("view engine", "ejs")
-app.use(express.static(__dirname + '/public'));
+require("./db/index")
+require("./db/passport")(passport)
 
 
-// Configures the database and opens a global connection that can be used in any module
-require("./db")
+//use passport && body parser
+app.use(passport.initialize())
 
-// Pass the global passport object into the configuration function
-//require("./config/passport")(passport)
 
-// This will initialize the passport object on every request
-//app.use(passport.initialize())
-
-// Instead of using body-parser middleware, use the new Express implementation of the same thing
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
 
 /**
  * -------------- ROUTES ----------------
  */
 
 // Imports all of the routes from ./routes/index.js
-//app.use(require("./routes"))
+
+app.use(express.static(__dirname + "/public"))
+
+// body-parser middleware
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+mountRoutes(app)
+app.set("view engine", "ejs")
+app.use(require("./routes"))
 
 
 /**
