@@ -1,9 +1,9 @@
 // ./routes/index.js
-const users = require('./user')
-const default_ = require('./default')
+const user = require("./user")
+const default_ = require("./default")
 
 module.exports = app => {
-    app.use('/users', users)
-    app.use('/', default_)
+    app.use("/user", user)
+    app.use("/", default_)
 
 }
