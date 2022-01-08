@@ -21,8 +21,6 @@ require("./db/passport")(passport)
 //use passport && body parser
 app.use(passport.initialize())
 
-
-
 /**
  * -------------- ROUTES ----------------
  */
@@ -36,8 +34,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 mountRoutes(app)
 app.set("view engine", "ejs")
-app.use(require("./routes"))
-
 
 /**
  * -------------- SERVER ----------------

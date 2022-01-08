@@ -2,8 +2,7 @@
 const user = require("./user")
 const default_ = require("./default")
 
-module.exports = app => {
+module.exports = (app) => {
     app.use("/user", user)
     app.use("/", default_)
-
 }
