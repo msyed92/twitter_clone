@@ -13,8 +13,6 @@ router.route("/profile/:username")
 
 router.route("/home")
     .get(passport.authenticate("jwt", { session: false }), (req, res, next) => {
-        console.log(req.headers.cookie)
-
         res.render("home", { username: "CHANGE THIS" })
     })
 
@@ -36,7 +34,7 @@ router.route("/login")
 
                 if (isValid) {
                     const jwt = utils.issueJWT(user)
-                    response.cookie('jwt', jwt.token, { httpOnly: true, secure: true, maxAge: 3600000 })
+                    //response.cookie('jwt', jwt.token, { httpOnly: true, secure: true, maxAge: 3600000 })
                     response.json({ success: true, user: user, token: jwt.token, expiresIn: jwt.expires })
                 } else {
                     response.status(401).json(({ success: false, msg: "incorrect password" }))
