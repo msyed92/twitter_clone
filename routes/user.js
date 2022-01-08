@@ -1,7 +1,7 @@
 const db = require("../config/database")
 const utils = require("../lib/utils")
 const passport = require("passport")
-require("passport-jwt")
+require("passport-local")
 const router = require("express").Router()
 
 router.route("/profile/:username")
@@ -12,12 +12,16 @@ router.route("/profile/:username")
 
 
 router.route("/home")
-    .get(passport.authenticate("jwt", { session: false }), (req, res, next) => {
-        res.render("home", { username: "CHANGE THIS" })
+    .get((req, res, next) => {
+        console.log(req.isAuthenticated)
+        if (req.isAuthenticated) {
+            console.log("AUTHENTICATED")
+        }
+        //res.render("home", { username: "CHANGE THIS" })
     })
 
 router.route("/login")
-    .get((req, res) => {
+    .get((req, res, next) => {
         res.render("login")
     })
     .post((req, response, next) => {
@@ -27,21 +31,19 @@ router.route("/login")
             .then((res) => {
                 const user = res.rows[0]
                 if (!user) {
-                    response.status(401).json(({ success: false, msg: "could not find user" }))
+                    response.redirect("/home/login")
                 }
+                if (!utils.validPassword(req.body.password, user.hash, user.salt)) {
 
-                const isValid = utils.validPassword(req.body.password, user.hash, user.salt)
-
-                if (isValid) {
-                    const jwt = utils.issueJWT(user)
-                    //response.cookie('jwt', jwt.token, { httpOnly: true, secure: true, maxAge: 3600000 })
-                    response.json({ success: true, user: user, token: jwt.token, expiresIn: jwt.expires })
-                } else {
-                    response.status(401).json(({ success: false, msg: "incorrect password" }))
+                    response.redirect("/home/login")
                 }
+                passport.authenticate("local", (req, res), () => {
+                    response.redirect("/user/home")
+                })
             })
             .catch((err) => {
-                next(err)
+                console.log(err)
+                //res.redirect("/home/login")
             })
 
     })
@@ -62,8 +64,8 @@ router.route("/register")
             .then((res) => {
                 const user = res.rows[0]
                 console.log(user)
-                const jwt = utils.issueJWT(user)
-                response.json({ success: true, user: user, token: jwt.token, expiresIn: jwt.expires })
+                // const jwt = utils.issueJWT(user)
+                // response.json({ success: true, user: user, token: jwt.token, expiresIn: jwt.expires })
 
             })
 

@@ -16,3 +16,19 @@ if (document.URL == "http://localhost:3000/user/register") {
     })
 }
 
+async function getData(url) {
+    console.log("HERE")
+    try {
+        const response = await fetch(url)
+        const data = await response.json()
+        console.log(data, "HERE 2")
+    } catch (error) {
+        // Error handling here
+        console.log(error)
+    }
+}
+
+// Replace url with your url
+const url = "http://localhost:3000/user/login"
+
+getData(url)
