@@ -1,5 +1,4 @@
 const express = require("express")
-const mountRoutes = require("./routes")
 const path = require("path")
 const passport = require("passport")
 const passportJWT = require("passport-jwt")
@@ -14,12 +13,19 @@ require("dotenv").config()
 
 // Create the Express application
 const app = express()
-require("./db/index")
-require("./db/passport")(passport)
+require("./config/database")
+require("./config/passport")(passport)
 
 
 //use passport && body parser
 app.use(passport.initialize())
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.set("view engine", "ejs")
+app.use(express.static(__dirname + "/public"))
+
+
 
 /**
  * -------------- ROUTES ----------------
@@ -27,13 +33,7 @@ app.use(passport.initialize())
 
 // Imports all of the routes from ./routes/index.js
 
-app.use(express.static(__dirname + "/public"))
-
-// body-parser middleware
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-mountRoutes(app)
-app.set("view engine", "ejs")
+app.use(require("./routes"))
 
 /**
  * -------------- SERVER ----------------

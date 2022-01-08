@@ -1,8 +1,8 @@
 // ./routes/index.js
-const user = require("./user")
-const default_ = require("./default")
+const router = require('express').Router();
 
-module.exports = (app) => {
-    app.use("/user", user)
-    app.use("/", default_)
-}
+router.use('/user', require('./user'));
+
+router.use('/', require('./default'));
+
+module.exports = router;
