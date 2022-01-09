@@ -1,7 +1,6 @@
 const express = require("express")
 const path = require("path")
-const passport = require("passport")
-const pool = require("./config/database")
+require("./config/database")
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -12,18 +11,8 @@ require("dotenv").config()
 
 // Create the Express application
 const app = express()
-require("./config/database")
-require("./config/passport")(passport)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.set("view engine", "ejs")
-
-
-//use passport && body parser
-app.use(passport.initialize())
-
-
-
 app.use(express.static(__dirname + "/public"))
 
 /**
