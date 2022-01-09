@@ -1,6 +1,5 @@
-const pool = require("../config/database")
 const router = require("express").Router()
-
+const auth = require("./functions/auth")
 const { register } = require("./functions/register")
 const { login } = require("./functions/login")
 
@@ -8,7 +7,7 @@ router.route("/login")
     .get((req, res, next) => {
         //render login page
     })
-    .post((req, res) => { })
+    .post(login)
 
 router.route("/register")
     .get((req, res) => {
@@ -18,19 +17,13 @@ router.route("/register")
 
 /***********User can only enter these routes if authenticated/logged in ***********/
 router.route("/home")
-    .get((req, res, next) => {
-        //GET tweets, access settings, render user specific information
+    .get(auth, (req, res, next) => {
     })
 
-
 router.route("/profile/:username")
-    .get((req, res, next) => {
+    .get(auth, (req, res, next) => {
         //GET user profile
     })
 
-
 // export our router to be mounted by the parent application
 module.exports = router
-
-
-

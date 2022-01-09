@@ -9,7 +9,6 @@ require("dotenv").config()
 
 exports.register = (req, response) => {
     const { username, password, email, phone, firstName, lastName } = req.body
-    let flag = false
     try {
         (async () => {
             const checkEmail = await api.getUser("email", email)
@@ -40,21 +39,16 @@ exports.register = (req, response) => {
                 }
                 await api.registerUser(user)
                     .then((res) => {
-                        flag = true
-                        response.status(200).send({ message: 'User added to database, not verified' })
+                        const token = jwt.sign({ email: email }, process.env.SECRET_KEY)
+                        response.status(200).send({ message: 'User added to database.', token: token })
                         return res
                     })
                     .catch((err) => {
-                        flag = false //If user is not inserted is not inserted to database assigning flag as 0/false.
                         console.error(err)
                         return response.status(500).json({
                             error: "Database error"
                         })
                     })
-
-                if (flag) {
-                    const token = jwt.sign({ email: email }, process.env.SECRET_KEY)
-                }
             }
         })()
 
@@ -66,7 +60,3 @@ exports.register = (req, response) => {
         })
     }
 }
-
-
-
-
