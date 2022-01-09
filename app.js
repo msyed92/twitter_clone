@@ -1,6 +1,8 @@
 const express = require("express")
-const path = require("path")
-require("./config/database")
+const PORT = process.env.PORT || 3000
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const pg = require("pg")
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -8,13 +10,25 @@ require("./config/database")
 
 // Gives us access to variables set in the .env file via `process.env.VARIABLE_NAME` syntax
 require("dotenv").config()
+require("./config/database")
+
+// client.connect((err) => { //Connected Database
+//     if (err) {
+//         console.log(err)
+//     } else {
+//         console.log("Data logging initiated!")
+//     }
+
+// })
 
 // Create the Express application
 const app = express()
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(express.static(__dirname + "/public"))
-
+app.use(bodyParser.json())
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+    })
+)
 /**
  * -------------- ROUTES ----------------
  */
@@ -28,6 +42,6 @@ app.use(require("./routes"))
  */
 
 // Server listens on http://localhost:3000
-app.listen(process.env.PORT || 3000, () => {
+app.listen(PORT, () => {
     console.log("server successfly started.")
 })

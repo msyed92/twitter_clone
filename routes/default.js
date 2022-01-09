@@ -4,5 +4,5 @@ const router = require("express").Router()
 module.exports = router
 router.route("/")
     .get(async (req, res) => {
-        res.render("default")
+        //render sign in/signup page
     })

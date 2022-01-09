@@ -1,12 +1,32 @@
-const { Pool } = require('pg')
+// const { Pool } = require('pg')
 
-const pool = new Pool({
+// const pool = new Pool({
+//     user: process.env.PGUSER,
+//     host: process.env.PGHOST,
+//     database: process.env.PGDATABASE,
+//     password: process.env.PGPASSWORD,
+//     port: process.env.PGPORT,
+//     ssl: false
+// })
+
+// module.exports = pool;
+
+
+const { Pool, Client } = require("pg");
+
+const credentials = {
     user: process.env.PGUSER,
     host: process.env.PGHOST,
     database: process.env.PGDATABASE,
     password: process.env.PGPASSWORD,
     port: process.env.PGPORT,
     ssl: false
-})
+};
 
-module.exports = pool;
+const client = new Client(credentials)
+const pool = new Pool(credentials)
+
+
+
+module.exports.client = client
+module.exports.pool = pool
