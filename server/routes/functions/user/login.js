@@ -2,7 +2,6 @@ const pool = require("../../../config/database").pool
 const jwt = require("jsonwebtoken")
 const utils = require("../../../lib/password")
 const api = require("../api.js")
-//test
 //Login Function
 exports.login = async (req, res) => {
     const { username, password } = req.body
