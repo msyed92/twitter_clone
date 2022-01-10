@@ -1,4 +1,4 @@
-const pool = require("../../config/database").pool
+const pool = require("../../../config/database").pool
 
 async function getUser(col, val) {
     const SQL = `SELECT * FROM users WHERE ${col} = $1`;

@@ -1,21 +1,22 @@
-const pool = require("../../config/database").pool
+const pool = require("../../../config/database").pool
 const jwt = require("jsonwebtoken")
 const api = require("./api.js")
 
 //Login Function
 exports.submit = async (req, res) => {
     try {
+        const newLocal = await api.getUser(follower).then((u) => { return u.rows[0] }).catch((err) => { throw err })
+        const user = newLocal
         const query = "INSERT INTO tweets (content, created_at, user_id) VALUES ($1, $2, $3)"
         const values = [req.body.content, new Date(Date.now()).toISOString(), req.body.user_id]
         pool.query(query, values)
             .then((result) => {
-                const token = jwt.sign({ id: req.body.user_id }, process.env.SECRET_KEY, { expiresIn: '1d' })
-                res.status(200).json({ message: 'Tweet submitted!.', token: token, id: req.body.user_id })
+                response.status(200).json({ message: `Tweet submitted by`, user: user.toAuthJSON(), id: follower })
                 return result
             })
             .catch((err) => {
                 console.error(err)
-                return res.status(500).json({
+                return response.status(500).json({
                     error: "Error submitting tweet."
                 })
             })
@@ -23,7 +24,7 @@ exports.submit = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({
-            error: "Database error while registring user!", //Database connection error
+            error: "Database error while submitting tweet!", //Database connection error
         })
 
     }

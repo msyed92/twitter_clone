@@ -1,11 +1,13 @@
-const pool = require("../../config/database").pool
+const pool = require("../../../config/database").pool
 const jwt = require("jsonwebtoken")
 const api = require("./api.js")
 
-exports.follow = async (req, res) => {
+exports.follow = async (req, response) => {
     try {
         const follower = req.body.user_id
         const followed = req.body.followed_id
+        const newLocal = await api.getUser(follower).then((u) => { return u.rows[0] }).catch((err) => { throw err })
+        const user = newLocal
         if (await api.doesFollow(5, 1)) {
             res.status(500).json({
                 error: `${followed} is already followed by ${follower}`,
@@ -16,13 +18,12 @@ exports.follow = async (req, res) => {
             const values = [follower, followed, new Date(Date.now()).toISOString()]
             pool.query(SQL, values)
                 .then((result) => {
-                    const token = jwt.sign({ id: follower }, process.env.SECRET_KEY, { expiresIn: '1d' })
-                    res.status(200).json({ message: `${follower} followed ${followed}`, token: token, id: follower })
+                    response.status(200).json({ message: `${follower} followed ${followed}`, user: user.toAuthJSON(), id: follower })
                     return result
                 })
                 .catch((err) => {
                     console.error(err)
-                    return res.status(500).json({
+                    return response.status(500).json({
                         error: "Error following user."
                     })
                 })

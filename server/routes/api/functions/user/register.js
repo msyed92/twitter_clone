@@ -1,13 +1,12 @@
-const client = require("../../../config/database").client
-const pool = require("../../../config/database").pool
+const pool = require("../../../../config/database").pool
 const jwt = require("jsonwebtoken")
 const api = require("../api.js")
-const utils = require("../../../lib/password")
+const utils = require("../password")
 require("dotenv").config()
 
 //Registration Function
 
-exports.register = (req, response) => {
+exports.register = (req, response, next) => {
     const { username, password, email, phone, firstName, lastName } = req.body
     try {
         (async () => {
@@ -38,17 +37,10 @@ exports.register = (req, response) => {
                     time: new Date(Date.now()).toISOString()
                 }
                 await api.registerUser(user)
-                    .then((res) => {
-                        const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, { expiresIn: '1d' })
-                        response.status(200).send({ message: 'User added to database.', token: token })
+                    .then(function () {
+                        response.json({ user: user.toAuthJSON() });
                         return res
-                    })
-                    .catch((err) => {
-                        console.error(err)
-                        return response.status(500).json({
-                            error: "Database error"
-                        })
-                    })
+                    }).catch(next);
             }
         })()
 

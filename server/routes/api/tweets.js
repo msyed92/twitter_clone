@@ -1,14 +1,14 @@
 const router = require("express").Router()
-const auth = require("./functions/auth")
+const auth = require("../auth")
 const tweet = require("./functions/tweet")
 
 router.route("/submit")
-    .post(auth, tweet.submit)
+    .post(auth.required, tweet.submit)
 
 router.route("/:username")
-    .get(auth, tweet.getUser)
+    .get(auth.required, tweet.getUser)
 
 router.route("/timeline")
-    .get(auth, tweet.getTL)
+    .get(auth.required, tweet.getTL)
 
 module.exports = router
