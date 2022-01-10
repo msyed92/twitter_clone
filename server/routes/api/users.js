@@ -18,7 +18,7 @@ router.route("/register")
 
 /***********User can only enter these routes if authenticated/logged in ***********/
 router.route("/user")
-    .get(auth.required, (req, res, next) => {
+    .get(auth.auth.required, (req, res, next) => {
         api.getUser("id", req.payload.id).then(function (user) {
             if (!user) { return res.sendStatus(401); }
 

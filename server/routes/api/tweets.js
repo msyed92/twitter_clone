@@ -3,12 +3,12 @@ const auth = require("../auth")
 const tweet = require("./functions/tweet")
 
 router.route("/submit")
-    .post(auth.required, tweet.submit)
+    .post(auth.checkAuthentication, tweet.submit)
 
 router.route("/:username")
-    .get(auth.required, tweet.getUser)
+    .get(auth.checkAuthentication, tweet.getUser)
 
 router.route("/timeline")
-    .get(auth.required, tweet.getTL)
+    .get(auth.checkAuthentication, tweet.getTL)
 
 module.exports = router

@@ -1,4 +1,5 @@
-const { Pool, Client } = require("pg");
+const { Pool, Client } = require("pg")
+require("dotenv").config({ path: "../../.env" })
 
 const credentials = {
     user: process.env.PGUSER,
@@ -11,6 +12,7 @@ const credentials = {
 
 const client = new Client(credentials)
 const pool = new Pool(credentials)
+
 
 module.exports.client = client
 module.exports.pool = pool

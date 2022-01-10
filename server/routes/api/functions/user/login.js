@@ -1,4 +1,5 @@
 const pool = require("../../../../config/database").pool
+const passport = require('passport')
 const jwt = require("jsonwebtoken")
 const utils = require("../password")
 const api = require("../api.js")
@@ -16,12 +17,14 @@ exports.login = async (req, res, next) => {
             return res.status(422).json({ errors: { password: "can't be blank" } });
         }
 
-        passport.authenticate('local', { session: false }, function (err, user, info) {
+        passport.authenticate('local', { session: false }, async (err, user, info) => {
             if (err) { return next(err); }
 
             if (user) {
-                user.token = user.generateJWT();
-                return res.json({ user: user.toAuthJSON() });
+                const local = await auth.generateJWT(user)
+                const token = local
+                user.token = token
+                return res.status(200).json({ user: await auth.toAuthJSON(user) })
             } else {
                 return res.status(422).json(info);
             }
