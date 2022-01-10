@@ -32,22 +32,22 @@ exports.submit = async (req, res) => {
 exports.getTL = async (req, res) => {
     const { id } = req.body.id
     try {
-
-
+        const follows = await api.getFollowed(id)
     } catch (err) {
     }
 }
 
 exports.getUser = async (req, res) => {
     const { username } = req.params
+    const { user_id } = req.body.id
+
     try {
         const user = await api.getUser("username", username.toLowerCase())
 
         const id = user.rows[0].id
         const result = await api.getTweets(id)
-        return res.status(200).json({ message: "User tweets found", tweets: result })
-
-
+        const token = jwt.sign({ id: user_id }, process.env.SECRET_KEY, { expiresIn: '1d' })
+        return res.status(200).json({ message: "User tweets found", token: token, tweets: result })
 
     } catch (err) {
         console.log(err)

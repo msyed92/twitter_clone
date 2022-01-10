@@ -1,8 +1,8 @@
-const client = require("../../config/database").client
-const pool = require("../../config/database").pool
+const client = require("../../../config/database").client
+const pool = require("../../../config/database").pool
 const jwt = require("jsonwebtoken")
-const api = require("./api.js")
-const utils = require("../../lib/password")
+const api = require("../api.js")
+const utils = require("../../../lib/password")
 require("dotenv").config()
 
 //Registration Function

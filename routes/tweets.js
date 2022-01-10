@@ -2,7 +2,6 @@ const router = require("express").Router()
 const auth = require("./functions/auth")
 const tweet = require("./functions/tweet")
 
-
 router.route("/submit")
     .post(auth, tweet.submit)
 

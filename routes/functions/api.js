@@ -30,7 +30,41 @@ async function getTweets(id) {
             throw err
         })
 }
+async function getFollowers(id) {
+    const SQL = "SELECT follower_id FROM relationships WHERE followed_id = $1"
+    const values = [id]
+    return pool.query(SQL, values)
+        .then((result) => {
+            return result.rows
+        })
+        .catch((err) => {
+            throw err
+        })
+}
+
+async function getFollowed(id) {
+    const SQL = "SELECT followed_id FROM relationships WHERE follower_id = $1"
+    const values = [id]
+    return pool.query(SQL, values)
+        .then((result) => {
+            return result.rows
+        })
+        .catch((err) => {
+            throw err
+        })
+}
+
+async function doesFollow(follower, followed) {
+    let followers = await getFollowers(followed)
+    followers = followers.map((follower) => follower.follower_id)
+    return followers.includes(follower)
+}
+
 
 module.exports.getUser = getUser
 module.exports.registerUser = registerUser
 module.exports.getTweets = getTweets
+module.exports.getFollowers = getFollowers
+module.exports.getFollowed = getFollowed
+module.exports.doesFollow = doesFollow
+

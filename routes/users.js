@@ -1,7 +1,7 @@
 const router = require("express").Router()
 const auth = require("./functions/auth")
-const { register } = require("./functions/register")
-const { login } = require("./functions/login")
+const { register } = require("./functions/user/register")
+const { login } = require("./functions/user/login")
 
 router.route("/login")
     .get((req, res, next) => {
