@@ -1,4 +1,3 @@
-const db = require("../config/database")
 const router = require("express").Router()
 
 module.exports = router
