@@ -19,5 +19,18 @@ async function registerUser(user) {
 
 }
 
+async function getTweets(id) {
+    const SQL = "SELECT * FROM tweets WHERE user_id = $1"
+    const values = [id]
+    return pool.query(SQL, values)
+        .then((result) => {
+            return result.rows
+        })
+        .catch((err) => {
+            throw err
+        })
+}
+
 module.exports.getUser = getUser
 module.exports.registerUser = registerUser
+module.exports.getTweets = getTweets

@@ -28,7 +28,7 @@ exports.register = (req, response) => {
                 const saltHash = utils.genPassword(password)
 
                 const user = {
-                    username,
+                    username: username.toLowerCase(),
                     email,
                     phone,
                     firstName,
@@ -39,7 +39,7 @@ exports.register = (req, response) => {
                 }
                 await api.registerUser(user)
                     .then((res) => {
-                        const token = jwt.sign({ email: email }, process.env.SECRET_KEY)
+                        const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, { expiresIn: '1d' })
                         response.status(200).send({ message: 'User added to database.', token: token })
                         return res
                     })
