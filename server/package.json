@@ -9,17 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.1",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^10.0.0",
-    "ejs": "^3.1.6",
+    "errorhandler": "^1.5.1",
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "node-postgres": "^0.6.2",
-    "passport": "^0.5.2",
-    "passport-local": "^1.0.0",
     "pg": "^8.7.1"
   }
 }
