@@ -7,13 +7,13 @@ const auth = require('../../../auth');
 
 //Login Function
 exports.login = async (req, res, next) => {
-    console.log(req)
     const { username, password } = req.body
     try {
         const user = await api.getUser("username", username).then((result) => { return result.rows[0] }).catch((err) => { next(err) })
-
+        let message = ''
         if (!user) {
-            return res.status(401).json({ success: false, msg: "could not find user" });
+            message = "could not find user"
+            return res.status(401).json({ success: false, msg: message });
         }
 
         // Function defined at bottom of app.js
@@ -21,9 +21,11 @@ exports.login = async (req, res, next) => {
 
         if (isValid) {
             const tokenObject = auth.issueJWT(user);
-            return res.status(200).json({ success: true, token: tokenObject.token, expiresIn: tokenObject.expires });
+            message = "succesfully logged in"
+            return res.status(200).json({ success: true, token: tokenObject.token, expiresIn: tokenObject.expires, msg: message });
         } else {
-            return res.status(401).json({ success: false, msg: "you entered the wrong password" });
+            message = "you entered the wrong password"
+            return res.status(401).json({ success: false, msg: message });
         }
 
     } catch (err) {

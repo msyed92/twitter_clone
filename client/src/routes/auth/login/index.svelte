@@ -1,4 +1,5 @@
 <script>
+	import { goto } from '$app/navigation';
 	$: username = '';
 	$: password = '';
 	let loginMethods = ['username', 'email', 'phone number'];
@@ -10,10 +11,11 @@
 	$: methodIndex = loginMethods.findIndex((e) => e === method);
 	$: result = {};
 
+	//const baseURL = import.meta.env.VITE_SERVER_BASE_URL
 	const baseURL = 'http://localhost:5000/api';
 
 	async function signIn() {
-		let res = await fetch(`${baseURL}/user/login`, {
+		let res = await fetch(baseURL + '/user/login', {
 			method: 'POST',
 			body: JSON.stringify({
 				username: username,
@@ -25,9 +27,14 @@
 			}
 		});
 		const json = await res.json();
-		console.log(json);
 		result = json;
+		return result;
 	}
+
+	const direct = (site) => {
+		const href = site;
+		goto(href, { noscroll: true, keepfocus: true });
+	};
 </script>
 
 <main>
@@ -48,7 +55,17 @@
 		<br />
 		<input type="text" placeholder="password" name="password" bind:value={password} />
 		<br />
-		<button type="button" on:click={signIn}>Sign In</button>
+		<button
+			type="button"
+			on:click={async () => {
+				await signIn().then((result) => {
+					if (result.success) {
+						direct('/');
+					} else {
+					}
+				});
+			}}>Sign In</button
+		>
 	</form>
 
 	<h1>{result}</h1>

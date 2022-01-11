@@ -1,6 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
-	const handleClick = (site) => {
+	const direct = (site) => {
 		const href = site;
 		goto(href, { noscroll: true, keepfocus: true });
 	};
@@ -10,12 +10,12 @@
 	<h1>Twitter</h1>
 	<button
 		on:click={() => {
-			handleClick('/auth/login');
+			direct('/auth/login');
 		}}>Sign In</button
 	>
 	<button
 		on:click={() => {
-			handleClick('/auth/register');
+			direct('/auth/register');
 		}}>Sign Up</button
 	>
 </main>

@@ -3,7 +3,9 @@
 	import Feed from '../components/feed/Feed.svelte';
 	import Auth from '../components/Auth.svelte';
 	import Explorer from '../components/explorer/Explorer.svelte';
-	let auth = false;
+	import load from '../routes/auth/login/index.svelte';
+	console.log(load);
+	let auth = true;
 </script>
 
 <svelte:head>
@@ -12,10 +14,11 @@
 
 <main>
 	{#if auth}
-		<Menu />
+		<!-- <Menu />
 		<Feed />
-		<Explorer />
+		<Explorer /> -->
 	{:else}
+		PAGE
 		<Auth />
 	{/if}
 </main>
