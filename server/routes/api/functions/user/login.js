@@ -7,12 +7,13 @@ const auth = require('../../../auth');
 
 //Login Function
 exports.login = async (req, res, next) => {
+    console.log(req)
     const { username, password } = req.body
     try {
         const user = await api.getUser("username", username).then((result) => { return result.rows[0] }).catch((err) => { next(err) })
 
         if (!user) {
-            res.status(401).json({ success: false, msg: "could not find user" });
+            return res.status(401).json({ success: false, msg: "could not find user" });
         }
 
         // Function defined at bottom of app.js
@@ -20,14 +21,14 @@ exports.login = async (req, res, next) => {
 
         if (isValid) {
             const tokenObject = auth.issueJWT(user);
-            res.status(200).json({ success: true, token: tokenObject.token, expiresIn: tokenObject.expires });
+            return res.status(200).json({ success: true, token: tokenObject.token, expiresIn: tokenObject.expires });
         } else {
-            res.status(401).json({ success: false, msg: "you entered the wrong password" });
+            return res.status(401).json({ success: false, msg: "you entered the wrong password" });
         }
 
     } catch (err) {
         console.log(err)
-        res.status(500).json({
+        return res.status(500).json({
             error: "Database error occurred while signing in!", //Database connection error
         })
     }

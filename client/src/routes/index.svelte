@@ -1,2 +1,21 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import Menu from '../components/menu/Menu.svelte';
+	import Feed from '../components/feed/Feed.svelte';
+	import Auth from '../components/Auth.svelte';
+	import Explorer from '../components/explorer/Explorer.svelte';
+	let auth = false;
+</script>
+
+<svelte:head>
+	<title>Twitter 2.0</title>
+</svelte:head>
+
+<main>
+	{#if auth}
+		<Menu />
+		<Feed />
+		<Explorer />
+	{:else}
+		<Auth />
+	{/if}
+</main>
