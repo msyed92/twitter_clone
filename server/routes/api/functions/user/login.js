@@ -9,26 +9,22 @@ const auth = require('../../../auth');
 exports.login = async (req, res, next) => {
     const { username, password } = req.body
     try {
-        if (!username) {
-            return res.status(422).json({ errors: { email: "can't be blank" } });
+        const user = await api.getUser("username", username).then((result) => { return result.rows[0] }).catch((err) => { next(err) })
+
+        if (!user) {
+            res.status(401).json({ success: false, msg: "could not find user" });
         }
 
-        if (!password) {
-            return res.status(422).json({ errors: { password: "can't be blank" } });
+        // Function defined at bottom of app.js
+        const isValid = utils.validPassword(password, user.hash, user.salt);
+
+        if (isValid) {
+            const tokenObject = auth.issueJWT(user);
+            res.status(200).json({ success: true, token: tokenObject.token, expiresIn: tokenObject.expires });
+        } else {
+            res.status(401).json({ success: false, msg: "you entered the wrong password" });
         }
 
-        passport.authenticate('local', { session: false }, async (err, user, info) => {
-            if (err) { return next(err); }
-
-            if (user) {
-                const local = await auth.generateJWT(user)
-                const token = local
-                user.token = token
-                return res.status(200).json({ user: await auth.toAuthJSON(user) })
-            } else {
-                return res.status(422).json(info);
-            }
-        })(req, res, next);
     } catch (err) {
         console.log(err)
         res.status(500).json({

@@ -1,8 +1,8 @@
 const router = require("express").Router()
-const auth = require('../auth');
 const { register } = require("./functions/user/register")
 const { login } = require("./functions/user/login")
 const api = require("./functions/api")
+const passport = require("passport")
 
 router.route("/login")
     .get((req, res, next) => {
@@ -18,7 +18,7 @@ router.route("/register")
 
 /***********User can only enter these routes if authenticated/logged in ***********/
 router.route("/user")
-    .get(auth.auth.required, (req, res, next) => {
+    .get(passport.authenticate('jwt', { session: false }), (req, res, next) => {
         api.getUser("id", req.payload.id).then(function (user) {
             if (!user) { return res.sendStatus(401); }
 
@@ -27,7 +27,7 @@ router.route("/user")
     })
 
 router.route("/profile/:username")
-    .get((req, res, next) => {
+    .get(passport.authenticate('jwt', { session: false }), (req, res, next) => {
         //GET user profile
     })
 

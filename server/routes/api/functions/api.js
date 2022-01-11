@@ -24,7 +24,7 @@ async function getTweets(id) {
     const values = [id]
     return pool.query(SQL, values)
         .then((result) => {
-            return result.rows
+            return result
         })
         .catch((err) => {
             throw err
@@ -47,7 +47,7 @@ async function getFollowed(id) {
     const values = [id]
     return pool.query(SQL, values)
         .then((result) => {
-            return result.rows
+            return result
         })
         .catch((err) => {
             throw err

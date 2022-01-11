@@ -1,14 +1,15 @@
 const router = require("express").Router()
 const auth = require("../auth")
 const tweet = require("./functions/tweet")
+const passport = require("passport")
 
 router.route("/submit")
-    .post(auth.checkAuthentication, tweet.submit)
+    .post(passport.authenticate('jwt', { session: false }), tweet.submit)
 
 router.route("/:username")
-    .get(auth.checkAuthentication, tweet.getUser)
+    .get(passport.authenticate('jwt', { session: false }), tweet.getUser)
 
-router.route("/timeline")
-    .get(auth.checkAuthentication, tweet.getTL)
+router.route("/home/timeline")
+    .get(passport.authenticate('jwt', { session: false }), tweet.getTL)
 
 module.exports = router

@@ -4,19 +4,20 @@ const api = require("./api.js")
 const auth = require("../../auth")
 
 //Login Function
-exports.submit = async (req, response) => {
+exports.submit = async (req, response, next) => {
     try {
-        const id = req.headers.id
+        const id = req.user.id
         const content = req.body.content
+
         const newLocal = await api.getUser("id", id).then((u) => { return u.rows[0] }).catch((err) => { throw err })
         const db_user = newLocal
+
         const query = "INSERT INTO tweets (content, created_at, user_id) VALUES ($1, $2, $3) RETURNING *"
         const values = [content, new Date(Date.now()).toISOString(), db_user.id]
         pool.query(query, values)
-            .then(async (result) => {
+            .then((result) => {
                 const tweet = result.rows[0]
-                console.log(tweet)
-                response.status(200).json({ message: `Tweet submitted by`, user: await auth.toAuthJSON(db_user), tweet: content })
+                response.status(200).json({ message: `Tweet submitted by`, user: db_user, tweet: content })
                 return tweet
             })
             .catch((err) => {
@@ -35,23 +36,38 @@ exports.submit = async (req, response) => {
     }
 }
 
-exports.getTL = async (req, res) => {
-    const { id } = req.body.id
+exports.getTL = async (req, response, next) => {
+
     try {
-        const follows = await api.getFollowed(id)
+        const id = req.user.id
+        const local = await api.getFollowed(id).then((f) => { return f.rows }).catch((err) => { throw err })
+        const follows = local
+
+        const local_ = await Promise.all(follows.map(async (p) => {
+            const t = await api.getTweets(p.followed_id)
+            return t
+        }))
+        let tweets = local_.flat()
+        tweets.sort((a, b) => a.updated_at - b.updated_at);
+        return response.status(200).json({ message: "Timeline tweets found", id: id, tweets: tweets })
     } catch (err) {
     }
 }
 
 exports.getUser = async (req, res) => {
-    const { username } = req.params
-    const { user_id } = req.body.id
-
     try {
-        const user = await api.getUser("username", username.toLowerCase()).then((u) => { return u.rows[0] }).catch((err) => { throw err })
-        const id = user.id
-        const result = await api.getTweets(id)
-        return res.status(200).json({ message: "User tweets found", user: await auth.toAuthJSON(user), id: id, tweets: result })
+        const id = req.user.id
+        const { username } = req.params
+        const local = await api.getUser("username", username.toLowerCase()).then((u) => { return u.rows[0] }).catch((err) => { throw err })
+        if (local) {
+            const profile = local
+            const local_ = await api.getTweets(profile.id).then((t) => { return t.rows }).catch((err) => { throw err })
+            const tweets = local_
+            return res.status(200).json({ success: true, message: "User tweets found", profile: profile.id, id: id, tweets: tweets })
+        } else {
+            return res.status(200).json({ success: true, message: "User does not exist", id: id })
+        }
+
 
     } catch (err) {
         console.log(err)

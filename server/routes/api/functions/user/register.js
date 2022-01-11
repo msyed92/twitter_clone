@@ -39,14 +39,14 @@ exports.register = async (req, response, next) => {
             await api.registerUser(user)
                 .then(async (result) => {
                     const db_user = result.rows[0]
-                    const local = await auth.toAuthJSON(db_user).then((result) => { return result })
-                    db_user.token = local
                     return db_user
                 })
                 .then((user) => {
-                    return response.status(200).json({ user: user.token })
+                    const tokenObject = auth.issueJWT(user);
+                    return response.status(200).json({ success: true, token: tokenObject.token, expiresIn: tokenObject.expires });
                 })
-                .catch(next);
+                .catch(next)
+
         }
 
     }

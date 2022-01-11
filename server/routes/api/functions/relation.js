@@ -4,12 +4,10 @@ const api = require("./api.js")
 
 exports.follow = async (req, response) => {
     try {
-        const follower = req.body.user_id
-        const followed = req.body.followed_id
-        const newLocal = await api.getUser(follower).then((u) => { return u.rows[0] }).catch((err) => { throw err })
-        const user = newLocal
-        if (await api.doesFollow(5, 1)) {
-            res.status(500).json({
+        const follower = req.user.id
+        const followed = req.body.profile_id
+        if (await api.doesFollow(follower, followed)) {
+            response.status(500).json({
                 error: `${followed} is already followed by ${follower}`,
             })
 
@@ -18,7 +16,7 @@ exports.follow = async (req, response) => {
             const values = [follower, followed, new Date(Date.now()).toISOString()]
             pool.query(SQL, values)
                 .then((result) => {
-                    response.status(200).json({ message: `${follower} followed ${followed}`, user: user.toAuthJSON(), id: follower })
+                    response.status(200).json({ message: `${follower} followed ${followed}`, follower_id: follower, followed_id: followed })
                     return result
                 })
                 .catch((err) => {
@@ -38,27 +36,25 @@ exports.follow = async (req, response) => {
     }
 }
 
-exports.unfollow = async (req, res) => {
+exports.unfollow = async (req, response) => {
     try {
-        const follower = req.body.user_id
-        const followed = req.body.followed_id
-        if (!await api.doesFollow(5, 1)) {
-            res.status(500).json({
-                error: `${followed} is not followed by ${follower}`,
+        const follower = req.user.id
+        const unfollowed = req.body.profile_id
+        if (!await api.doesFollow(follower, unfollowed)) {
+            response.status(500).json({
+                error: `${unfollowed} is not followed by ${follower}`,
             })
 
         } else {
             const SQL = "DELETE FROM relationships WHERE follower_id = $1 AND followed_id = $2"
-            const values = [follower, followed]
+            const values = [follower, unfollowed]
             pool.query(SQL, values)
                 .then((result) => {
-                    const token = jwt.sign({ id: follower }, process.env.SECRET_KEY, { expiresIn: '1d' })
-                    res.status(200).json({ message: `${follower} unfollowed ${followed}`, token: token, id: follower })
-                    return result
+                    return response.status(200).json({ message: `${follower} unfollowed ${unfollowed}`, follower_id: follower, followed_id: unfollowed })
                 })
                 .catch((err) => {
                     console.error(err)
-                    return res.status(500).json({
+                    return response.status(500).json({
                         error: "Error unfollowing user."
                     })
                 })
@@ -67,7 +63,7 @@ exports.unfollow = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({
-            error: "Database error while following user!", //Database connection error
+            error: "Database error while unfollowing user!", //Database connection error
         })
 
     }

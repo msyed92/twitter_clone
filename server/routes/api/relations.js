@@ -1,11 +1,11 @@
 const router = require("express").Router()
-const auth = require("../auth")
 const relation = require("./functions/relation")
+const passport = require('passport')
 
 router.route("/follow")
-    .post(auth.auth.required, relation.follow)
+    .post(passport.authenticate('jwt', { session: false }), relation.follow)
 
 router.route("/unfollow")
-    .post(auth.auth.required, relation.unfollow)
+    .post(passport.authenticate('jwt', { session: false }), relation.unfollow)
 
 module.exports = router
