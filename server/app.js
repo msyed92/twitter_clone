@@ -1,11 +1,9 @@
-const http = require("http")
-const path = require("path")
-const methods = require("methods")
 const express = require("express")
 const bodyParser = require("body-parser")
 const session = require("express-session")
 const cors = require("cors")
 const passport = require("passport")
+const cookieParser = require("cookie-parser")
 const errorhandler = require("errorhandler")
 
 /**
@@ -22,7 +20,6 @@ const isProduction = process.env.NODE_ENV === "production"
 require("./config/database")
 require("./config/passport")(passport)
 
-
 // Create the Express application
 const app = express()
 app.use(cors())
@@ -31,7 +28,7 @@ app.use(cors())
 app.use(require("morgan")("dev"))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-
+app.use(cookieParser())
 app.use(passport.initialize())
 
 

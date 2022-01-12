@@ -3,7 +3,7 @@ const pool = require("../../../config/database").pool
 async function getUser(col, val) {
     const SQL = `SELECT * FROM users WHERE ${col} = $1`
     const values = [val]
-    return pool.query(SQL, values)
+    return await pool.query(SQL, values)
 }
 
 async function registerUser(user) {

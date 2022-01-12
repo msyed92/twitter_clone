@@ -20,9 +20,15 @@ exports.login = async (req, res, next) => {
         const isValid = utils.validPassword(password, user.hash, user.salt);
 
         if (isValid) {
-            const tokenObject = auth.issueJWT(user);
+            const tokenObject = auth.issueJWT(user)
             message = "succesfully logged in"
-            return res.status(200).json({ success: true, token: tokenObject.token, expiresIn: tokenObject.expires, msg: message });
+            console.log(tokenObject)
+            return res.cookie('jwt', tokenObject.token,
+                {
+                    httpOnly: true,
+                    secure: false //--> SET TO TRUE ON PRODUCTION
+                }
+            ).status(200).json({ success: true, expiresIn: tokenObject.expires, msg: message });
         } else {
             message = "you entered the wrong password"
             return res.status(401).json({ success: false, msg: message });
@@ -33,5 +39,15 @@ exports.login = async (req, res, next) => {
         return res.status(500).json({
             error: "Database error occurred while signing in!", //Database connection error
         })
+    }
+}
+
+exports.logout = async (req, res) => {
+    if (req.cookies['jwt']) {
+        return res.clearCookie('jwt')
+            .status(200)
+            .json({ success: false, message: "You have logged out" })
+    } else {
+        return res.status(401).json({ error: 'Invalid jwt' })
     }
 }
