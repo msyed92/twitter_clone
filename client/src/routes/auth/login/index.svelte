@@ -1,7 +1,10 @@
 <script>
-	import { goto } from '$app/navigation';
+	import { session } from '$app/stores';
+	import { login } from '$lib/auth/login';
+
 	$: username = '';
 	$: password = '';
+
 	let loginMethods = ['username', 'email', 'phone number'];
 	$: method = loginMethods[0];
 	const changeMethod = (input) => {
@@ -9,32 +12,7 @@
 	};
 
 	$: methodIndex = loginMethods.findIndex((e) => e === method);
-	$: result = {};
-
-	//const baseURL = import.meta.env.VITE_SERVER_BASE_URL
-	const baseURL = 'http://localhost:5000/api';
-
-	async function signIn() {
-		let res = await fetch(baseURL + '/user/login', {
-			method: 'POST',
-			body: JSON.stringify({
-				username: username,
-				password: password
-			}),
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json'
-			}
-		});
-		const json = await res.json();
-		result = json;
-		return result;
-	}
-
-	const direct = (site) => {
-		const href = site;
-		goto(href, { noscroll: true, keepfocus: true });
-	};
+	//$: result = {};
 </script>
 
 <main>
@@ -57,18 +35,11 @@
 		<br />
 		<button
 			type="button"
-			on:click={async () => {
-				await signIn().then((result) => {
-					if (result.success) {
-						direct('/');
-					} else {
-					}
-				});
+			on:click={() => {
+				login(username, password);
 			}}>Sign In</button
 		>
 	</form>
-
-	<h1>{result}</h1>
 </main>
 
 <style>

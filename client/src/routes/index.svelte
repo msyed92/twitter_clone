@@ -4,7 +4,6 @@
 	import Auth from '../components/Auth.svelte';
 	import Explorer from '../components/explorer/Explorer.svelte';
 	import load from '../routes/auth/login/index.svelte';
-	console.log(load);
 	let auth = true;
 </script>
 
@@ -14,9 +13,9 @@
 
 <main>
 	{#if auth}
-		<!-- <Menu />
+		<Menu />
 		<Feed />
-		<Explorer /> -->
+		<Explorer />
 	{:else}
 		PAGE
 		<Auth />
