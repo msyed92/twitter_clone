@@ -3,14 +3,22 @@
 	import Feed from '../components/feed/Feed.svelte';
 	import Auth from '../components/Auth.svelte';
 	import Explorer from '../components/explorer/Explorer.svelte';
+	import { logout, authenticate } from '$lib/auth/authenticate';
 	import { onMount } from 'svelte';
+	import { authenticated } from '../stores/auth';
 	import { get } from '$lib/api';
-
-	let auth;
-
+	$: auth = false;
 	onMount(async () => {
-		const response = await get('/user/protected');
-		console.log(response);
+		await authenticate()
+			.then((res) => {
+				authenticated.subscribe((value) => {
+					auth = value;
+				});
+				return res;
+			})
+			.catch((err) => {
+				throw err;
+			});
 	});
 </script>
 
@@ -20,11 +28,14 @@
 
 <main>
 	{#if auth}
+		PROTECTED
 		<Menu />
 		<Feed />
 		<Explorer />
+		<form on:submit={logout}>
+			<button type="submit">Log Out</button>
+		</form>
 	{:else}
-		PAGE
 		<Auth />
 	{/if}
 </main>

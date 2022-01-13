@@ -1,6 +1,6 @@
 <script>
 	import Post from './Post.svelte';
-	import { tweets } from '../../store.js';
+	import { tweets } from '../../stores/store.js';
 	import Header from './Header.svelte';
 	export let tweetList;
 	tweets.set(tweetList);

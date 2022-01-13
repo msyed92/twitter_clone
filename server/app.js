@@ -31,7 +31,18 @@ app.use(express.static(__dirname + "/public"))
 app.use(cookieParser())
 app.use(session({ secret: process.env.JWT_SECRET, cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }))
 
-app.use(cors())
+const whitelist = ['http://localhost:3000', 'http://localhost:5000'];
+const opts = {
+    origin: (origin, callback) => {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    }, credentials: true
+}
+
+app.use(cors(opts))
 app.use(require("morgan")("dev"))
 app.use(require("method-override")())
 app.use(passport.initialize())

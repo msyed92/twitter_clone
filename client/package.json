@@ -21,6 +21,7 @@
   },
   "type": "module",
   "dependencies": {
-    "js-cookie": "^3.0.1"
+    "js-cookie": "^3.0.1",
+    "uuid": "^8.3.2"
   }
 }

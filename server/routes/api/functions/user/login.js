@@ -4,7 +4,6 @@ const auth = require('../../../auth');
 
 //Login Function
 exports.login = async (req, res, next) => {
-    console.log(req.headers)
     const { username, password } = req.body
     try {
         const user = await api.getUser("username", username).then((result) => { return result.rows[0] }).catch((err) => { next(err) })
@@ -20,7 +19,6 @@ exports.login = async (req, res, next) => {
         if (isValid) {
             const tokenObject = auth.issueJWT(user)
             message = "succesfully logged in"
-            console.log(tokenObject)
             return res.cookie('jwt', tokenObject.token,
                 {
                     httpOnly: true,

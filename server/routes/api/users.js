@@ -5,10 +5,7 @@ const { protected, profile } = require("./functions/user/protected")
 const passport = require("passport")
 
 router.route("/login")
-    .post((req, res, next) => {
-        console.log(req.body)
-        next()
-    }, login)
+    .post(login)
 
 router.route("/logout")
     .post(logout)

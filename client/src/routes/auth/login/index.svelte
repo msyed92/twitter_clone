@@ -1,6 +1,5 @@
 <script>
-	import { session } from '$app/stores';
-	import { login } from '$lib/auth/login';
+	import { login } from '$lib/auth/authenticate';
 
 	$: username = '';
 	$: password = '';
@@ -18,8 +17,8 @@
 <main>
 	<h1>Twitter 2.0 Sign In</h1>
 	<form
-		on:submit|preventDefault={() => {
-			login(username, password);
+		on:submit|preventDefault={async () => {
+			await login(username, password);
 		}}
 	>
 		<input type="text" placeholder={method} name={method} bind:value={username} />
@@ -39,6 +38,7 @@
 		<br />
 		<button type="submit">Sign In</button>
 	</form>
+	<small>Don't have an account? <a href="/auth/register"> Sign Up.</a></small>
 </main>
 
 <style>
