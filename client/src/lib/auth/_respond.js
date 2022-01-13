@@ -8,7 +8,7 @@ export function respond(body) {
 
     return {
         headers: {
-            'Authorization': value
+            'set-cookie': `jwt=${value}; Path=/; HttpOnly`
         },
         body
     };

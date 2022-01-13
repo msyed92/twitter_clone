@@ -1,17 +1,11 @@
 
 // File: ./config/passport
 const JwtStrategy = require("passport-jwt").Strategy
-const fs = require("fs")
-const path = require("path")
 const api = require("../routes/api/functions/api")
+require("dotenv").config({ path: "../../.env" })
+const secret = process.env.JWT_SECRET
 
-// Go up one directory, then look for file name
-const pathToKey = path.join(__dirname, '..', 'id_rsa_pub.pem');
-
-// The verifying public key
-const PUB_KEY = fs.readFileSync(pathToKey, "utf8")
-
-const cookieExtractor = async (req) => {
+const cookieExtractor = req => {
     let jwt = null
 
     if (req && req.cookies) {
@@ -24,8 +18,7 @@ const cookieExtractor = async (req) => {
 // At a minimum, you must pass the `jwtFromRequest` and `secretOrKey` properties
 const options = {
     jwtFromRequest: cookieExtractor,
-    secretOrKey: PUB_KEY,
-    //algorithms: ["RS256"]
+    secretOrKey: secret
 }
 
 const strategy = new JwtStrategy(options, async (jwt_payload, done) => {
@@ -51,3 +44,4 @@ module.exports = (passport) => {
     // The JWT payload is passed into the verify callback
     passport.use(strategy)
 }
+module.exports.cookieExtractor = cookieExtractor

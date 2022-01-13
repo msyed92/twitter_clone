@@ -22,21 +22,21 @@ require("./config/passport")(passport)
 
 // Create the Express application
 const app = express()
-app.use(cors())
 
 // Normal express config defaults
-app.use(require("morgan")("dev"))
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+app.use(express.static(__dirname + "/public"))
+
 app.use(cookieParser())
+app.use(session({ secret: process.env.JWT_SECRET, cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }))
+
+app.use(cors())
+app.use(require("morgan")("dev"))
+app.use(require("method-override")())
 app.use(passport.initialize())
 
 
-
-app.use(require("method-override")())
-app.use(express.static(__dirname + "/public"))
-
-app.use(session({ secret: "conduit", cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }))
 if (!isProduction) {
     app.use(errorhandler())
 }
@@ -46,7 +46,7 @@ if (!isProduction) {
 
 // Imports all of the routes from ./routes/index.js
 
-app.use(require("./routes"))
+app.use(require("./routes/index"))
 
 
 /**

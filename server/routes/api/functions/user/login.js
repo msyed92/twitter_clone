@@ -1,12 +1,10 @@
-const pool = require("../../../../config/database").pool
-const passport = require('passport')
-const jwt = require("jsonwebtoken")
 const utils = require("../password")
 const api = require("../api.js")
 const auth = require('../../../auth');
 
 //Login Function
 exports.login = async (req, res, next) => {
+    console.log(req.headers)
     const { username, password } = req.body
     try {
         const user = await api.getUser("username", username).then((result) => { return result.rows[0] }).catch((err) => { next(err) })
@@ -46,7 +44,7 @@ exports.logout = async (req, res) => {
     if (req.cookies['jwt']) {
         return res.clearCookie('jwt')
             .status(200)
-            .json({ success: false, message: "You have logged out" })
+            .json({ success: true, message: "You have logged out" })
     } else {
         return res.status(401).json({ error: 'Invalid jwt' })
     }

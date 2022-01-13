@@ -1,9 +1,35 @@
 const pool = require("../../../config/database").pool
 
+async function getInteractions(id, user = 0, type = "likes") {
+    let SQL = ''
+    let values;
+    if (user === 0) {
+        SQL = `SELECT * FROM ${type} WHERE tweet_id = $1`
+        values = [id]
+    } else {
+        SQL = `SELECT * FROM ${type} WHERE tweet_id = $1 AND user_id = $2`
+        values = [id, user]
+    }
+
+    return await pool.query(SQL, values)
+        .then((result) => {
+            return result
+        })
+        .catch((err) => {
+            throw err
+        })
+}
+
 async function getUser(col, val) {
     const SQL = `SELECT * FROM users WHERE ${col} = $1`
     const values = [val]
     return await pool.query(SQL, values)
+        .then((result) => {
+            return result
+        })
+        .catch((err) => {
+            throw err
+        })
 }
 
 async function registerUser(user) {
@@ -55,16 +81,21 @@ async function getFollowed(id) {
 }
 
 async function doesFollow(follower, followed) {
-    let followers = await getFollowers(followed)
-    followers = followers.map((follower) => follower.follower_id)
-    return followers.includes(follower)
+    await getFollowers(followed)
+        .then((result) => {
+            let ans = result.map((follower) => follower.follower_id)
+            return ans.includes(follower)
+        })
+        .catch((err) => {
+            throw err
+        })
 }
 
 
 module.exports.getUser = getUser
+module.exports.getInteractions = getInteractions
 module.exports.registerUser = registerUser
 module.exports.getTweets = getTweets
 module.exports.getFollowers = getFollowers
 module.exports.getFollowed = getFollowed
 module.exports.doesFollow = doesFollow
-

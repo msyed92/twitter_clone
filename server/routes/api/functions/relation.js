@@ -1,69 +1,126 @@
 const pool = require("../../../config/database").pool
-const jwt = require("jsonwebtoken")
 const api = require("./api.js")
 
-exports.follow = async (req, response) => {
+exports.like = async (req, response, next) => {
     try {
-        const follower = req.user.id
-        const followed = req.body.profile_id
-        if (await api.doesFollow(follower, followed)) {
-            response.status(500).json({
-                error: `${followed} is already followed by ${follower}`,
-            })
+        const liker = req.user.id
+        const tweet = req.body.tweet_id
+        const likes = await api.getInteractions(tweet, liker, "likes")
+            .then((result) => { return result.rows })
+            .catch((err) => { throw err })
+        console.log(likes)
 
+        let SQL;
+        let values;
+        let message;
+
+        if (likes.length != 0) {
+            SQL = `DELETE FROM likes WHERE tweet_id = $1 AND liked_id = $2 RETURNING *`
+            values = [tweet, liker]
+            message = 'unliked'
         } else {
-            const SQL = "INSERT INTO relationships (follower_id, followed_id, created_at) VALUES ($1, $2, $3) RETURNING *"
-            const values = [follower, followed, new Date(Date.now()).toISOString()]
-            pool.query(SQL, values)
-                .then((result) => {
-                    response.status(200).json({ message: `${follower} followed ${followed}`, follower_id: follower, followed_id: followed })
-                    return result
-                })
-                .catch((err) => {
-                    console.error(err)
-                    return response.status(500).json({
-                        error: "Error following user."
-                    })
-                })
+            SQL = `INSERT INTO likes (tweet_id, created_at, liked_id) VALUES ($1, $2, $3) RETURNING *`
+            values = [tweet, new Date(Date.now()).toISOString(), liker]
+            message = 'liked'
         }
-
+        await pool.query(SQL, values)
+            .then((result) => {
+                return response.status(200).json({ success: true, message: `${liker} ${message} ${tweet}` })
+            })
+            .catch((err) => {
+                console.error(err)
+                return response.status(500).json({
+                    error: "Error liking tweet."
+                })
+            })
     } catch (err) {
         console.log(err)
-        res.status(500).json({
-            error: "Database error while following user!", //Database connection error
+        response.status(500).json({
+            error: "Database error while liking tweet!", //Database connection error
         })
 
     }
 }
 
-exports.unfollow = async (req, response) => {
+exports.retweet = async (req, response, next) => {
     try {
-        const follower = req.user.id
-        const unfollowed = req.body.profile_id
-        if (!await api.doesFollow(follower, unfollowed)) {
-            response.status(500).json({
-                error: `${unfollowed} is not followed by ${follower}`,
-            })
+        const retweeter = req.user.id
+        const tweet = req.body.tweet_id
+        const RTs = await api.getInteractions(tweet, retweeter, "retweets")
+            .then((result) => { return result.rows }).catch((err) => { throw err })
+            .catch((err) => { throw err })
+        console.log(RTs)
 
+        let SQL;
+        let values;
+        let message;
+
+        if (RTs.length != 0) {
+            SQL = `DELETE FROM retweets WHERE tweet_id = $1 AND user_id = $2 RETURNING *`
+            values = [tweet, retweeter]
+            message = 'unretweeted'
         } else {
-            const SQL = "DELETE FROM relationships WHERE follower_id = $1 AND followed_id = $2"
-            const values = [follower, unfollowed]
-            pool.query(SQL, values)
-                .then((result) => {
-                    return response.status(200).json({ message: `${follower} unfollowed ${unfollowed}`, follower_id: follower, followed_id: unfollowed })
-                })
-                .catch((err) => {
-                    console.error(err)
-                    return response.status(500).json({
-                        error: "Error unfollowing user."
-                    })
-                })
-
+            SQL = `INSERT INTO retweets (tweet_id, created_at, user_id) VALUES ($1, $2, $3) RETURNING *`
+            values = [tweet, new Date(Date.now()).toISOString(), retweeter]
+            message = 'retweeted'
         }
+        await pool.query(SQL, values)
+            .then((result) => {
+                return response.status(200).json({ success: true, message: `${retweeter} ${message} ${tweet}` })
+            })
+            .catch((err) => {
+                console.error(err)
+                return response.status(500).json({
+                    error: "Error retweeting tweet."
+                })
+            })
     } catch (err) {
         console.log(err)
-        res.status(500).json({
-            error: "Database error while unfollowing user!", //Database connection error
+        response.status(500).json({
+            error: "Database error while retweeting tweet!", //Database connection error
+        })
+
+    }
+}
+
+exports.follow = async (req, response) => {
+    try {
+        const follower = req.user.id
+        const followed = req.body.profile_id
+        const doesFollow = await api.doesFollow(follower, followed)
+            .then((res) => { return res })
+            .catch((err) => { throw err })
+
+        let SQL;
+        let values;
+        let message;
+
+
+        if (doesFollow) {
+            SQL = "DELETE FROM relationships WHERE follower_id = $1 AND followed_id = $2"
+            values = [follower, followed]
+            message = 'unfollow'
+
+
+        } else {
+            SQL = "INSERT INTO relationships (follower_id, followed_id, created_at) VALUES ($1, $2, $3) RETURNING *"
+            values = [follower, followed, new Date(Date.now()).toISOString()]
+            message = 'follow'
+        } pool.query(SQL, values)
+            .then((result) => {
+                return response.status(200).json({ success: true, message: `${follower} ${message}ed ${followed}` })
+            })
+            .catch((err) => {
+                console.error(err)
+                return response.status(500).json({
+                    error: "Error with following/unfollowing user."
+                })
+            })
+
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({
+            error: "Database error while following user!", //Database connection error
         })
 
     }

@@ -43,7 +43,12 @@ exports.register = async (req, response, next) => {
                 })
                 .then((user) => {
                     const tokenObject = auth.issueJWT(user);
-                    return response.status(200).json({ success: true, token: tokenObject.token, expiresIn: tokenObject.expires });
+                    return response.cookie('jwt', tokenObject.token,
+                        {
+                            httpOnly: true,
+                            secure: false //--> SET TO TRUE ON PRODUCTION
+                        }
+                    ).status(200).json({ success: true, expiresIn: tokenObject.expires, msg: "successfully registered" });
                 })
                 .catch(next)
 

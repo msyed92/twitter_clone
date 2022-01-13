@@ -1,20 +1,21 @@
 import { post } from '$lib/api';
-import { direct } from '$lib/utils';
+import { respond } from './_respond';
 
-export const login = async (username, password, token = '') => {
-    await post('/user/login', { username, password }, token)
+export const login = async (username, password) => {
+    const response = await post('/user/login', { username, password })
         .then((result) => {
-            const auth = result.success
-            if (auth) {
-                if (token == '') {
-                    login(username, password, result.token);
-                } else {
-                    direct('/');
-                }
-            } else {
-                return result;
-            }
+            return result
         })
+        .catch((err) => { throw err })
+    if (!response.success) {
+        error = (await response.json()).message;
+        return
+    }
+
+    window.location = '/';
+
+    return respond(response);
+
 
 
 };

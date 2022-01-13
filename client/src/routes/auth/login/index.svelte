@@ -17,7 +17,11 @@
 
 <main>
 	<h1>Twitter 2.0 Sign In</h1>
-	<form action="/" method="GET">
+	<form
+		on:submit|preventDefault={() => {
+			login(username, password);
+		}}
+	>
 		<input type="text" placeholder={method} name={method} bind:value={username} />
 
 		{#each loginMethods as method, i}
@@ -33,12 +37,7 @@
 		<br />
 		<input type="text" placeholder="password" name="password" bind:value={password} />
 		<br />
-		<button
-			type="button"
-			on:click={() => {
-				login(username, password);
-			}}>Sign In</button
-		>
+		<button type="submit">Sign In</button>
 	</form>
 </main>
 

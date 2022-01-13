@@ -1,10 +1,7 @@
 const jwt = require("jsonwebtoken")
-const fs = require("fs")
-const path = require("path")
-const pathToKey = path.join(__dirname, '..', 'id_rsa_priv.pem');
-const PRIV_KEY = fs.readFileSync(pathToKey, 'utf8')
-
+require("dotenv").config({ path: "../../.env" })
 const EXP_TIME = process.env.JWT_EXPIRATION_TIME
+const secret = process.env.JWT_SECRET
 
 /**
  * @param {*} user - The user object.  We need this to set the JWT `sub` payload property to the Postgres user ID
@@ -20,7 +17,7 @@ function issueJWT(user) {
         expiresIn: new Date(Date.now() + parseInt(EXP_TIME))
     };
 
-    const signedToken = jwt.sign(payload, PRIV_KEY, { expiresIn: expiresIn });
+    const signedToken = jwt.sign(payload, secret, { expiresIn: expiresIn });
 
     return {
         token: signedToken,

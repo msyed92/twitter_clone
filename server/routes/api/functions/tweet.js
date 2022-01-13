@@ -1,9 +1,7 @@
 const pool = require("../../../config/database").pool
-const jwt = require("jsonwebtoken")
 const api = require("./api.js")
-const auth = require("../../auth")
 
-//Login Function
+//submit a new tweet
 exports.submit = async (req, response, next) => {
     try {
         const id = req.user.id
