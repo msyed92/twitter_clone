@@ -12,7 +12,6 @@ async function send({ method, path, data, token }) {
         },
         ...(!noBodyData ? { body: JSON.stringify(data) } : null)
     }
-
     return fetch(`${base}${path}`, opts)
         .then(async (r) => {
             return await r.json()

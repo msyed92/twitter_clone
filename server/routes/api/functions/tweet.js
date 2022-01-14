@@ -49,6 +49,7 @@ exports.getTL = async (req, response, next) => {
         tweets.sort((a, b) => a.updated_at - b.updated_at);
         return response.status(200).json({ message: "Timeline tweets found", id: id, tweets: tweets })
     } catch (err) {
+        next()
     }
 }
 

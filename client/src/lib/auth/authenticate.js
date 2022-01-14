@@ -13,7 +13,7 @@ export const login = async (username, password) => {
 
 };
 
-export const logout = async (username, password) => {
+export const logout = async () => {
     const response = await post('/user/logout').then((r) => { return r }).catch((err) => { throw err })
     if (!response.success) {
         error = (await response).message;

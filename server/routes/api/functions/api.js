@@ -50,7 +50,7 @@ async function getTweets(id) {
     const values = [id]
     return pool.query(SQL, values)
         .then((result) => {
-            return result
+            return result.rows
         })
         .catch((err) => {
             throw err

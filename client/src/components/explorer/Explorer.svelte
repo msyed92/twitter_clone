@@ -4,8 +4,9 @@
 	import Who from './Who.svelte';
 </script>
 
-<main>
+<div>
+	EXPLORER
 	<Search />
 	<What />
 	<Who />
-</main>
+</div>
