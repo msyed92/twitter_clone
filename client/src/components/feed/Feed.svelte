@@ -1,20 +1,32 @@
 <script>
 	import Post from './Post.svelte';
-	import { tweets } from '../../stores/store.js';
+	import { tweets } from '../../stores/tweets.js';
 	import Header from './Header.svelte';
-	export let tweetList;
-	tweets.set(tweetList);
+	import { get, post } from '../../lib/api';
+	import { onMount } from 'svelte';
+	$: user = '';
+	$: tweetList = [];
+
+	onMount(async () => {
+		const local = await get('/tweets/home/timeline');
+		user = local.id;
+		tweetList = local.tweets;
+		console.log(tweetList);
+		tweets.set(tweetList);
+	});
 </script>
 
-<main>
-	<Header />
+<div>
+	<Header {user} />
 	{#await tweetList}
 		<p>Loading...</p>
 	{:then tweetList}
 		{#if tweetList !== undefined}
-			<Post />
+			{#each $tweets as tweet (tweet.id)}
+				<Post {tweet} />
+			{/each}
 		{/if}
 	{:catch error}
 		{error.message}
 	{/await}
-</main>
+</div>
