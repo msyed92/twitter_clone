@@ -3,12 +3,12 @@
 	export let type = 'button';
 	export let disabled = false;
 	export let tweet = false;
+	export let header = false;
 	export let small = false;
-	export let right = false;
 </script>
 
 <div>
-	<button {type} {disabled} class={style} class:tweet class:small class:right>
+	<button {type} {disabled} class={style} class:tweet class:header class:small>
 		<slot />
 	</button>
 </div>
@@ -78,9 +78,17 @@
 
 	.small {
 		width: 50%;
-	}
-
-	.right {
 		float: right;
+		height: 80%;
+	}
+	.header,
+	.header:hover,
+	.header:disabled {
+		width: 25%;
+		margin-left: 3%;
+		outline: solid;
+		outline-color: #c5c6e3;
+		outline-width: 0.05rem;
+		color: white;
 	}
 </style>

@@ -4,7 +4,7 @@ const api = require("./api.js")
 //submit a new tweet
 exports.submit = async (req, response, next) => {
     try {
-        const id = req.user.id
+        const id = req.body.id
         const content = req.body.content
 
         const newLocal = await api.getUser("id", id).then((u) => { return u.rows[0] }).catch((err) => { throw err })
@@ -15,19 +15,19 @@ exports.submit = async (req, response, next) => {
         pool.query(query, values)
             .then((result) => {
                 const tweet = result.rows[0]
-                response.status(200).json({ message: `Tweet submitted by`, user: db_user, tweet: content })
-                return tweet
+                return response.status(200).json({ success: true, message: `Tweet submitted!`, user: db_user.username, tweet: content })
             })
             .catch((err) => {
                 console.error(err)
                 return response.status(500).json({
+                    success: false,
                     error: "Error submitting tweet."
                 })
             })
 
     } catch (err) {
         console.log(err)
-        res.status(500).json({
+        return res.status(500).json({
             error: "Database error while submitting tweet!", //Database connection error
         })
 
@@ -70,7 +70,7 @@ exports.getUser = async (req, res) => {
 
     } catch (err) {
         console.log(err)
-        res.status(500).json({
+        return res.status(500).json({
             error: "Database error occurred while finding user!", //Database connection error
         })
     }

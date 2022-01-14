@@ -1,11 +1,37 @@
 <script>
+	export let user;
 	import MenuButton from '../menu/MenuButton.svelte';
+	import { post } from '$lib/api';
+	import { onMount } from 'svelte';
+	import { newTweet } from '$lib/auth/authenticate';
+
+	let text;
+
+	onMount(async () => {
+		const local = await post('/user/info', { id: user });
+		user = local;
+	});
 </script>
 
 <div>
-	<input type="text" placeholder="What's happening?" />
+	<input type="text" class="tweet-input" placeholder="What's happening?" bind:value={text} />
 
-	<form action=""><MenuButton type="submit" tweet small right>Tweet</MenuButton></form>
+	<form
+		on:submit|preventDefault={async () => {
+			const response = await newTweet(text, user.id)
+				.then((r) => {
+					return r;
+				})
+				.catch((e) => {
+					throw e;
+				});
+			const status = response.status;
+			const message = response.message;
+			alert(message);
+		}}
+	>
+		<MenuButton type="submit" tweet small>Tweet</MenuButton>
+	</form>
 </div>
 
 <style>
@@ -32,5 +58,9 @@
 	input:focus {
 		border: none;
 		outline: none;
+	}
+
+	.tweet-input {
+		margin-top: 3%;
 	}
 </style>

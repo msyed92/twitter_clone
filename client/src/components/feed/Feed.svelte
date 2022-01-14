@@ -21,8 +21,8 @@
 	{:then tweetList}
 		{#if user != ''}
 			<Header {user} />
+			<Tweet {user} />
 		{/if}
-		<Tweet />
 		{#if tweetList !== undefined}
 			{#each $tweets as tweet (tweet.id)}
 				<Post {tweet} />

@@ -2,7 +2,7 @@ import { post, get } from '$lib/api';
 import { authenticated } from '../../stores/auth'
 
 
-export const login = async (username, password) => {
+export async function login(username, password) {
     const response = await post('/user/login', { username, password }).then((r) => { return r }).catch((err) => { throw err })
     if (!response.success) {
         const error = (await response).message;
@@ -13,18 +13,18 @@ export const login = async (username, password) => {
 
 };
 
-export const logout = async () => {
-    const response = await post('/user/logout').then((r) => { return r }).catch((err) => { throw err })
+export async function logout() {
+    const response = await post('/user/logout').then((r) => { return r; }).catch((err) => { throw err; });
     if (!response.success) {
         error = (await response).message;
-        return error
+        return error;
     }
 
     window.location = '/';
 
-    return response
+    return response;
 
-};
+}
 
 export const register = async (username, password, email, phone, firstName, lastName) => {
     const response = await post('/user/register', { username, password, email, phone, firstName, lastName }).then((r) => { return r }).catch((err) => { throw err })
@@ -54,4 +54,13 @@ export const authenticate = async () => {
     } catch (e) {
         throw e;
     }
+}
+
+export async function newTweet(text, id) {
+    const response = await post('/tweets/submit', { id: id, content: text }).then((r) => { return r }).catch((err) => { throw err })
+    if (!response.success) {
+        const error = (await response).message;
+        return error
+    }
+    return response;
 }

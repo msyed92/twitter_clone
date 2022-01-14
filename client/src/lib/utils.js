@@ -1,13 +1,11 @@
 import { goto } from "$app/navigation"
+import { post } from './api'
 
 export function direct(site) {
     const href = site;
     goto(href, { noscroll: true, keepfocus: true });
 };
 
-const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-
-// a and b are javascript Date objects
 export function getTime(tweet) {
     const tweet_time = parseInt((new Date(tweet).getTime()).toFixed(0))
     const today = Math.floor((new Date()).getTime())
