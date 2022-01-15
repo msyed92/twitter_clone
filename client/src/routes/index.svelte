@@ -5,7 +5,8 @@
 	import Explorer from '../components/explorer/Explorer.svelte';
 	import { authenticate } from '$lib/auth/authenticate';
 	import { onMount } from 'svelte';
-	import { authenticated } from '../stores/auth';
+	import { authenticated } from '../stores/stores';
+
 	$: auth = false;
 	onMount(async () => {
 		await authenticate()
@@ -43,7 +44,7 @@
 	:global(body) {
 		margin: 0;
 	}
-	:global(div, button, body, main, input) {
+	:global(div, button, body, main, textarea, input) {
 		font-family: 'Be Vietnam Pro', sans-serif;
 	}
 

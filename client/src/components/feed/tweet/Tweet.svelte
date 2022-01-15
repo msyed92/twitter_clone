@@ -1,10 +1,11 @@
 <script>
 	export let user;
-	import MenuButton from '../menu/MenuButton.svelte';
+
+	import MenuButton from '../../menu/MenuButton.svelte';
 	import { post } from '$lib/api';
 	import { onMount } from 'svelte';
 	import { newTweet } from '$lib/auth/authenticate';
-
+	import { autoresize } from 'svelte-textarea-autoresize';
 	let text;
 
 	onMount(async () => {
@@ -14,20 +15,27 @@
 </script>
 
 <div>
-	<input type="text" class="tweet-input" placeholder="What's happening?" bind:value={text} />
+	<textarea
+		use:autoresize
+		type="text"
+		class="tweet-input"
+		placeholder="What's happening?"
+		bind:value={text}
+	/>
 
 	<form
 		on:submit|preventDefault={async () => {
-			const response = await newTweet(text, user.id)
+			await newTweet(text, user.id)
 				.then((r) => {
 					return r;
+				})
+				.then(async (r) => {
+					const message = r.message;
 				})
 				.catch((e) => {
 					throw e;
 				});
-			const status = response.status;
-			const message = response.message;
-			alert(message);
+			text = '';
 		}}
 	>
 		<MenuButton type="submit" tweet small>Tweet</MenuButton>
@@ -41,10 +49,11 @@
 		grid-template-columns: 3fr 1fr;
 	}
 
-	input {
+	textarea {
 		background-color: #202142;
 		border: none;
 		color: #c5c6e3;
+		min-height: 1.5rem;
 	}
 
 	::placeholder {
@@ -55,12 +64,19 @@
 		padding-bottom: 0;
 	}
 
-	input:focus {
+	textarea:focus {
 		border: none;
 		outline: none;
+		color: #c5c6e3;
+		font-size: 1.25rem;
 	}
 
 	.tweet-input {
 		margin-top: 3%;
+		resize: none;
+	}
+
+	.tweet-input::-webkit-scrollbar {
+		display: none;
 	}
 </style>

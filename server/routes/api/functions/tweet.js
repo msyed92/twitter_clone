@@ -27,7 +27,7 @@ exports.submit = async (req, response, next) => {
 
     } catch (err) {
         console.log(err)
-        return res.status(500).json({
+        return response.status(500).json({
             error: "Database error while submitting tweet!", //Database connection error
         })
 

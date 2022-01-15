@@ -1,5 +1,5 @@
 import { post, get } from '$lib/api';
-import { authenticated } from '../../stores/auth'
+import { authenticated } from '../../stores/stores'
 
 
 export async function login(username, password) {

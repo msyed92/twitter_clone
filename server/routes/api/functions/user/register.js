@@ -41,6 +41,13 @@ exports.register = async (req, response, next) => {
                     const db_user = result.rows[0]
                     return db_user
                 })
+                .then(async (db_user) => {
+                    const SQL = "INSERT INTO relationships (follower_id, followed_id, created_at) VALUES ($1, $2, $3) RETURNING *"
+                    const values = [db_user.id, db_user.id, new Date(Date.now()).toISOString()]
+                    await pool.query(SQL, values)
+                    return db_user
+
+                })
                 .then((user) => {
                     const tokenObject = auth.issueJWT(user);
                     return response.cookie('jwt', tokenObject.token,

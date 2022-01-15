@@ -11,8 +11,8 @@
 <main>
 	<h1>Twitter 2.0 Sign Up</h1>
 	<form
-		on:submit={async () => {
-			register(username, password, email, phone, firstName, lastName);
+		on:submit|preventDefault={async () => {
+			await register(username, password, email, phone, firstName, lastName);
 		}}
 	>
 		<input type="text" placeholder="username" name="username" bind:value={username} />

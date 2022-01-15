@@ -26,7 +26,7 @@ export function getTime(tweet) {
     } else if (minutes.time < 60) {
         time = minutes
     } else if (hours.time < 24) {
-        time = hours.time
+        time = hours
     } else if (days.time < 7) {
         time = days
     } else if (weeks.time < 52) {
