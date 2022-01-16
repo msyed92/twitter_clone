@@ -1,5 +1,5 @@
 import { goto } from "$app/navigation"
-import { post } from './api'
+import { post } from "./api"
 
 export function direct(site) {
     const href = site;
@@ -38,4 +38,38 @@ export function getTime(tweet) {
     }
 
     return `${Math.floor(time.time)}${time.text}`
+}
+
+export function isValid(type, input) {
+    console.log(input)
+    if (type == "username") {
+        //must not include special characters
+        const special = /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g
+        const isSpecial = special.test(input)
+        //starts with a letter
+        const first = input.charAt(0).match(/[a-zA-Z]/)
+        //between 4-15 characters
+        const len = input.length >= 4 && input.length <= 15
+        return len && first && !isSpecial
+    }
+
+    if (type == "password") {
+
+    }
+
+    if (type == "email") {
+
+    }
+
+    if (type == "phone") {
+
+    }
+
+    if (type == "firstName") {
+
+    }
+
+    if (type == "lastName") {
+
+    }
 }

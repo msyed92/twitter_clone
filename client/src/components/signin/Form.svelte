@@ -2,13 +2,14 @@
 	import { register } from '$lib/auth/authenticate';
 	import Input from './Input.svelte';
 	import MenuButton from '../menu/MenuButton.svelte';
-	$: isDisabled = true;
+	import { isValid } from '$lib/utils';
 	$: username = '';
 	$: password = '';
 	$: email = '';
 	$: phone = null;
 	$: firstName = '';
 	$: lastName = '';
+	let isDisabled = 'true';
 </script>
 
 <form
@@ -16,7 +17,12 @@
 		await register(username, password, email, phone, firstName, lastName);
 	}}
 >
-	<Input type="text" placeholder="username" name="username" bind:value={username} />
+	<Input
+		type="text"
+		placeholder="username"
+		name="username"
+		bind:value={username}
+	/>
 	<Input type="password" placeholder="password" name="password" bind:value={password} />
 	<Input
 		type="password"

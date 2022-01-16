@@ -6,9 +6,9 @@
 	import { newTweet } from '$lib/auth/authenticate';
 	import { autoresize } from 'svelte-textarea-autoresize';
 	import Modal from '../Modal.svelte';
+	let text;
 
 	$: isDisabled = text === '' || text == null || text.length >= 280;
-	let text;
 	$: message = 'default';
 	onMount(async () => {
 		const local = await post('/user/info', { id: user });

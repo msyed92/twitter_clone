@@ -137,4 +137,8 @@
 		color: #202142;
 		margin-top: 10%;
 	}
+
+	.register:hover {
+		margin-top: 10%;
+	}
 </style>
