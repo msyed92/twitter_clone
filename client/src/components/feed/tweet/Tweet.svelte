@@ -1,17 +1,29 @@
 <script>
 	export let user;
-
 	import MenuButton from '../../menu/MenuButton.svelte';
 	import { post } from '$lib/api';
 	import { onMount } from 'svelte';
 	import { newTweet } from '$lib/auth/authenticate';
 	import { autoresize } from 'svelte-textarea-autoresize';
-	let text;
+	import Modal from '../Modal.svelte';
 
+	$: isDisabled = text === '' || text == null || text.length >= 280;
+	let text;
+	$: message = 'default';
 	onMount(async () => {
 		const local = await post('/user/info', { id: user });
 		user = local;
 	});
+
+	let isOpenModal = false;
+
+	function openModal() {
+		isOpenModal = true;
+	}
+
+	function closeModal() {
+		isOpenModal = false;
+	}
 </script>
 
 <div>
@@ -20,6 +32,7 @@
 		type="text"
 		class="tweet-input"
 		placeholder="What's happening?"
+		autocomplete="off"
 		bind:value={text}
 	/>
 
@@ -30,7 +43,9 @@
 					return r;
 				})
 				.then(async (r) => {
-					const message = r.message;
+					message = r.message;
+					openModal();
+					return r;
 				})
 				.catch((e) => {
 					throw e;
@@ -38,7 +53,8 @@
 			text = '';
 		}}
 	>
-		<MenuButton type="submit" tweet small>Tweet</MenuButton>
+		<MenuButton type="submit" tweet small disabled={isDisabled}>Tweet</MenuButton>
+		<Modal {isOpenModal} {message} on:closeModal={closeModal} />
 	</form>
 </div>
 

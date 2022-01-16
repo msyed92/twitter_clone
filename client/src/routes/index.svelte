@@ -26,23 +26,22 @@
 	<title>Twitter 2.0</title>
 </svelte:head>
 
-<main>
-	{#if auth}
-		<div class="grid-container">
-			<Menu />
-			<Feed />
-			<Explorer />
-		</div>
-	{:else}
-		<Auth />
-	{/if}
-</main>
+{#if auth}
+	<div class="grid-container">
+		<Menu />
+		<Feed />
+		<Explorer />
+	</div>
+{:else}
+	<Auth />
+{/if}
 
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;500;700&display=swap');
 
-	:global(body) {
+	:global(body, main) {
 		margin: 0;
+		font-family: 'Be Vietnam Pro', sans-serif;
 	}
 	:global(div, button, body, main, textarea, input) {
 		font-family: 'Be Vietnam Pro', sans-serif;
