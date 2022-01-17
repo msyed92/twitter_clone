@@ -33,6 +33,19 @@
 		width: 30%;
 		text-align: center;
 		margin: auto;
-		height: 50%;
+		height: 65%;
+	}
+
+	small {
+		margin-top: 25%;
+	}
+
+	a,
+	a:visited {
+		color: rgba(128, 131, 219, 0.83);
+	}
+
+	a:active {
+		color: white;
 	}
 </style>

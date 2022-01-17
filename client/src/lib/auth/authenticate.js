@@ -28,7 +28,6 @@ export async function logout() {
 
 export const register = async (username, password, email, phone, firstName, lastName) => {
     const response = await post('/user/register', { username, password, email, phone, firstName, lastName }).then((r) => { return r }).catch((err) => { throw err })
-    console.log(response)
     if (!response.success) {
         const error = (await response).message;
         return error

@@ -63,6 +63,5 @@ export function isValid(type, input) {
     else {
         ans = new Error("Not a valid type!")
     }
-    console.log(type, ans)
     return ans;
 }
