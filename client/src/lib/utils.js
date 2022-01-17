@@ -1,16 +1,15 @@
 import { goto } from "$app/navigation"
-import { post } from "./api"
 
 export function direct(site) {
-    const href = site;
-    goto(href, { noscroll: true, keepfocus: true });
-};
+    const href = site
+    goto(href, { noscroll: true, keepfocus: true })
+}
 
 export function getTime(tweet) {
     const tweet_time = parseInt((new Date(tweet).getTime()).toFixed(0))
     const today = Math.floor((new Date()).getTime())
 
-    const difference = today - tweet_time;
+    const difference = today - tweet_time
 
     const seconds = { time: difference / 1000, text: "s" }
     const minutes = { time: seconds.time / 60, text: "m" }
@@ -20,7 +19,7 @@ export function getTime(tweet) {
     const months = { time: weeks.time / 4, text: "mos" }
     const years = { time: months.time / 12, text: "y" }
 
-    let time;
+    let time
     if (seconds.time < 60) {
         time = seconds
     } else if (minutes.time < 60) {
@@ -41,35 +40,29 @@ export function getTime(tweet) {
 }
 
 export function isValid(type, input) {
-    console.log(input)
+    let ans;
     if (type == "username") {
-        //must not include special characters
-        const special = /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g
-        const isSpecial = special.test(input)
-        //starts with a letter
-        const first = input.charAt(0).match(/[a-zA-Z]/)
-        //between 4-15 characters
-        const len = input.length >= 4 && input.length <= 15
-        return len && first && !isSpecial
+        ans = /^[A-Za-z0-9]\w{3,15}$/.test(input)
     }
 
-    if (type == "password") {
-
+    else if (type == "password") {
+        ans = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(input)
     }
 
-    if (type == "email") {
-
+    else if (type == "email") {
+        ans = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(input)
     }
 
-    if (type == "phone") {
-
+    else if (type == "phone") {
+        ans = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(input)
     }
 
-    if (type == "firstName") {
-
+    else if (type == "name") {
+        ans = /^[a-zA-Z]+$/.test(input)
     }
-
-    if (type == "lastName") {
-
+    else {
+        ans = new Error("Not a valid type!")
     }
+    console.log(type, ans)
+    return ans;
 }

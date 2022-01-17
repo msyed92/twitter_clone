@@ -138,7 +138,9 @@
 		margin-top: 10%;
 	}
 
-	.register:hover {
+	.register:disabled,
+	.register:hover,
+	.register:disabled:hover {
 		margin-top: 10%;
 	}
 </style>

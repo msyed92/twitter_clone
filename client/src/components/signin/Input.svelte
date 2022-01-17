@@ -1,15 +1,10 @@
 <script>
-	export let type, placeholder, name, value, style;
-
-	import { createEventDispatcher } from 'svelte';
-
-	const dispatch = createEventDispatcher();
-	function valid() {
-		dispatch('valid');
-	}
+	export let type, placeholder, name;
+	export let value = '';
+	const onInput = (e) => (value = e.target.value);
 </script>
 
-<input {type} {placeholder} {name} {value} {style} autocomplete="off" on:focus={valid} />
+<input {type} {placeholder} {name} {value} on:change={onInput} autocomplete="off" />
 
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;500;700&display=swap');

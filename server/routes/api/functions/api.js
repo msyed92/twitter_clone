@@ -33,6 +33,7 @@ async function getUser(col, val) {
 }
 
 async function registerUser(user) {
+    console.log(user)
     const SQL = `INSERT INTO users (username, email, phone, first_name, last_name, hash, salt, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`
     const values = [user.username, user.email, user.phone, user.firstName, user.lastName, user.hash, user.salt, user.time]
     return pool.query(SQL, values)

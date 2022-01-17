@@ -2,39 +2,47 @@
 	import { register } from '$lib/auth/authenticate';
 	import Input from './Input.svelte';
 	import MenuButton from '../menu/MenuButton.svelte';
+	import { writable } from 'svelte/store';
+
 	import { isValid } from '$lib/utils';
-	$: username = '';
-	$: password = '';
-	$: email = '';
-	$: phone = null;
-	$: firstName = '';
-	$: lastName = '';
-	let isDisabled = 'true';
+
+	const username = writable('');
+	const password = writable('');
+	const confirmPass = writable('');
+	const email = writable('');
+	const phone = writable('');
+	const firstName = writable('');
+	const lastName = writable('');
+
+	const reg = async () => {
+		await register($username, $password, $confirmPass, $email, $phone, $firstName, $lastName);
+	};
+
+	$: isDisabled =
+		!isValid('username', $username) ||
+		!isValid('password', $password) ||
+		$password != $confirmPass ||
+		!isValid('password', $confirmPass) ||
+		!isValid('email', $email) ||
+		!isValid('phone', $phone) ||
+		!isValid('name', $firstName) ||
+		!isValid('name', $lastName);
 </script>
 
-<form
-	on:submit|preventDefault={async () => {
-		await register(username, password, email, phone, firstName, lastName);
-	}}
->
-	<Input
-		type="text"
-		placeholder="username"
-		name="username"
-		bind:value={username}
-	/>
-	<Input type="password" placeholder="password" name="password" bind:value={password} />
+<form on:submit|preventDefault={reg}>
+	<Input type="text" placeholder="username" name="username" bind:value={$username} />
+	<Input type="password" placeholder="password" name="password" bind:value={$password} />
 	<Input
 		type="password"
 		placeholder="confirm password"
 		name="password-confirm"
-		bind:value={password}
+		bind:value={$confirmPass}
 	/>
-	<Input type="email" placeholder="email" name="email" bind:value={email} />
-	<Input type="text" placeholder="phone number (optional)" name="phone" bind:value={phone} />
-	<Input type="text" placeholder="first name" name="firstName" bind:value={firstName} />
-	<Input type="text" placeholder="last name" name="lastName" bind:value={lastName} />
-	<MenuButton type="submit" register disabled={isDisabled}>Sign Up</MenuButton>
+	<Input type="email" placeholder="email" name="email" bind:value={$email} />
+	<Input type="text" placeholder="phone number (optional)" name="phone" bind:value={$phone} />
+	<Input type="text" placeholder="first name" name="firstName" bind:value={$firstName} />
+	<Input type="text" placeholder="last name" name="lastName" bind:value={$lastName} />
+	<MenuButton type="submit" register bind:disabled={isDisabled}>Sign Up</MenuButton>
 </form>
 
 <style>

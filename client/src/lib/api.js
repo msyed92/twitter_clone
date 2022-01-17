@@ -14,6 +14,7 @@ async function send({ method, path, data, token }) {
     }
     return fetch(`${base}${path}`, opts)
         .then(async (r) => {
+            console.log(r)
             return await r.json()
         })
         .then((json) => {
