@@ -3,11 +3,9 @@
 </script>
 
 <div class="box">
-	<div class="signin">
-		<h1>Twitter 2.0 Sign Up</h1>
-		<Form />
-		<small>Already have an account? <a href="/auth/login"> Sign In</a></small>
-	</div>
+	<h1>Twitter 2.0 Sign Up</h1>
+	<Form />
+	<small>Already have an account? <a href="/auth/login"> Sign In</a></small>
 </div>
 
 <style>
@@ -18,8 +16,8 @@
 		font-family: 'Be Vietnam Pro', sans-serif;
 	}
 	h1 {
-		margin: 0;
-		padding-bottom: 5%;
+		margin: auto;
+		padding-bottom: 3%;
 	}
 	.box {
 		background-color: #202142;
@@ -29,15 +27,16 @@
 		font-family: 'Be Vietnam Pro', sans-serif;
 		padding: 5%;
 	}
-	.signin {
-		width: 30%;
+	div {
 		text-align: center;
-		margin: auto;
-		height: 65%;
 	}
 
 	small {
-		margin-top: 25%;
+		display: block;
+		margin-top: 3%;
+		margin-left: auto;
+		margin-right: auto;
+		width: 25%;
 	}
 
 	a,

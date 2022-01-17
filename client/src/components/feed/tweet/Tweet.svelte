@@ -1,6 +1,6 @@
 <script>
 	export let user;
-	import MenuButton from '../../menu/MenuButton.svelte';
+	import Button from '../../buttons/Button.svelte';
 	import { post } from '$lib/api';
 	import { onMount } from 'svelte';
 	import { newTweet } from '$lib/auth/authenticate';
@@ -53,7 +53,7 @@
 			text = '';
 		}}
 	>
-		<MenuButton type="submit" tweet small disabled={isDisabled}>Tweet</MenuButton>
+		<Button type="submit" tweet small disabled={isDisabled}>Tweet</Button>
 		<Modal {isOpenModal} {message} on:closeModal={closeModal} />
 	</form>
 </div>

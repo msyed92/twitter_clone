@@ -5,35 +5,52 @@
 		const href = site;
 		goto(href, { noscroll: true, keepfocus: true });
 	};
-	import MenuButton from './menu/MenuButton.svelte';
+	import Button from './buttons/Button.svelte';
 </script>
 
 <div>
 	<h1>Join Twitter 2.0</h1>
 
-	<MenuButton
-		inline
-		signin
-		tweet
+	<Button
+		class="signup"
 		on:click={() => {
 			direct('/auth/register');
-		}}>Sign Up with email</MenuButton
+		}}>Sign Up with email</Button
 	>
-	<h3>Already have an account?</h3>
-	<MenuButton
-		inline
-		signin
-		outline
+	<h4>Already have an account?</h4>
+	<Button
+		class="signin"
 		on:click={() => {
 			direct('/auth/login');
-		}}>Sign In</MenuButton
+		}}>Sign In</Button
 	>
 </div>
 
 <style>
+	* :global(.signup),
+	* :global(.signin) {
+		width: 15%;
+		font-size: medium;
+	}
+
+	* :global(.signin),
+	* :global(.signup):hover {
+		background-color: #202142;
+		color: #c5c6e3;
+		border-color: #c5c6e3;
+		border-width: 0.05rem;
+		border-style: solid;
+	}
+
+	* :global(.signup),
+	* :global(.signin):hover {
+		background-color: #c5c6e3;
+		color: #202142;
+	}
+
 	h1 {
 		margin: 0;
-		padding: 10% 0 2% 0;
+		padding: 10% 0 1% 0;
 	}
 	div {
 		text-align: center;

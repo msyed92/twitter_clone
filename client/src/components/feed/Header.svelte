@@ -1,6 +1,6 @@
 <script>
 	export let user;
-	import MenuButton from '../menu/MenuButton.svelte';
+	import Button from '../buttons/Button.svelte';
 	import { post } from '$lib/api';
 	import { onMount } from 'svelte';
 	onMount(async () => {
@@ -9,10 +9,10 @@
 	});
 </script>
 
-<MenuButton header>
+<Button header>
 	<h3>Hi, {user.name}</h3>
 	<small>@{user.username}</small>
-</MenuButton>
+</Button>
 
 <style>
 	h3 {

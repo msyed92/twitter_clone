@@ -1,24 +1,24 @@
 <script>
-	import MenuButton from './MenuButton.svelte';
+	import Button from '../buttons/Button.svelte';
 	import { logout } from '$lib/auth/authenticate';
 </script>
 
 <div class="menu">
 	<div class="panel">
 		<div class="buttons">
-			<MenuButton>Logo</MenuButton>
-			<MenuButton>Home</MenuButton>
-			<MenuButton>Explore</MenuButton>
-			<MenuButton>Notifications</MenuButton>
-			<MenuButton>Messages</MenuButton>
-			<MenuButton>Bookmarks</MenuButton>
-			<MenuButton>Lists</MenuButton>
-			<MenuButton>Profile</MenuButton>
-			<MenuButton>More</MenuButton>
+			<Button>Logo</Button>
+			<Button>Home</Button>
+			<Button>Explore</Button>
+			<Button>Notifications</Button>
+			<Button>Messages</Button>
+			<Button>Bookmarks</Button>
+			<Button>Lists</Button>
+			<Button>Profile</Button>
+			<Button>More</Button>
 		</div>
-		<MenuButton tweet>Tweet</MenuButton>
+		<Button tweet>Tweet</Button>
 		<form on:submit={logout}>
-			<MenuButton type="submit">Sign Out</MenuButton>
+			<Button type="submit">Sign Out</Button>
 		</form>
 	</div>
 </div>

@@ -40,13 +40,17 @@ export function getTime(tweet) {
 }
 
 export function isValid(type, input) {
-    let ans;
+    let ans, msg;
     if (type == "username") {
         ans = /^[A-Za-z0-9]\w{3,15}$/.test(input)
     }
 
-    else if (type == "password") {
+    else if (type == "password" || type == "confirm") {
         ans = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(input)
+    }
+
+    else if (type == "confirm") {
+
     }
 
     else if (type == "email") {
@@ -57,11 +61,17 @@ export function isValid(type, input) {
         ans = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(input)
     }
 
-    else if (type == "name") {
+    else if (type == "firstName" || type == "lastName") {
         ans = /^[a-zA-Z]+$/.test(input)
     }
     else {
         ans = new Error("Not a valid type!")
     }
-    return ans;
+
+    if (ans == true) {
+        msg = "valid"
+    } else {
+        msg = "invalid"
+    }
+    return { ans, msg }
 }
