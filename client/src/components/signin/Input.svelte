@@ -3,15 +3,24 @@
 
 	export let type, placeholder, name, style;
 	export let dataValid = '';
-	export let value = '';
+	export let match = '';
+	export let value;
+	export let small = '';
 
 	const onInput = (e) => {
 		value = e.target.value;
-		if (name != 'confirm') {
-			dataValid = isValid(name, value).msg;
-		} else {
-			dataValid = '';
-		}
+		dataValid =
+			value == '' || value == null || name == 'confirmation' ? '' : isValid(name, value).msg;
+		small =
+			value == '' || value == null
+				? ''
+				: name == 'firstName'
+				? 'first name'
+				: name == 'lastName'
+				? 'last name'
+				: name == 'phone'
+				? 'phone number'
+				: name;
 	};
 </script>
 
@@ -22,6 +31,8 @@
 	{value}
 	class={style}
 	{dataValid}
+	{small}
+	{match}
 	on:input={onInput}
 	autocomplete="off"
 />

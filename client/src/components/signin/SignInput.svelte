@@ -1,15 +1,20 @@
 <script>
 	import Input from './Input.svelte';
-	export let type, placeholder, name, dataValid;
-	export let value = '';
+	export let type, placeholder, name;
+	export let match = '';
+	export let dataValid = '';
+	export let value;
+	export let small = '';
+
+	$: message = `${small} ${dataValid}`;
 </script>
 
 <div>
-	<Input {type} {placeholder} {name} {value} bind:dataValid on:input />
-	{#if type != 'tel'}
-		<small class="float">{placeholder} {dataValid}</small>
+	<Input {type} {placeholder} {name} {value} bind:dataValid bind:small {match} on:input />
+	{#if name != 'confirmation'}
+		<small class="float">{message}</small>
 	{:else}
-		<small class="float">phone number {dataValid}</small>
+		<small class="float">{small} {match}</small>
 	{/if}
 	<span class="clear" />
 </div>
@@ -26,7 +31,7 @@
 		margin: auto;
 		height: auto;
 		width: 90%;
-		padding-bottom: 3%;
+		padding-bottom: 5%;
 	}
 
 	span.clear {

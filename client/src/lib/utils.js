@@ -45,12 +45,8 @@ export function isValid(type, input) {
         ans = /^[A-Za-z0-9]\w{3,15}$/.test(input)
     }
 
-    else if (type == "password" || type == "confirm") {
+    else if (type == "password" || type == "confirmation") {
         ans = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(input)
-    }
-
-    else if (type == "confirm") {
-
     }
 
     else if (type == "email") {

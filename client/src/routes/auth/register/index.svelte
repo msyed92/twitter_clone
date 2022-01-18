@@ -17,7 +17,7 @@
 	}
 	h1 {
 		margin: auto;
-		padding-bottom: 3%;
+		padding-bottom: 1%;
 	}
 	.box {
 		background-color: #202142;

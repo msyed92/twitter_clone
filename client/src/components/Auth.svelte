@@ -29,6 +29,7 @@
 <style>
 	* :global(.signup),
 	* :global(.signin) {
+		height: 2rem;
 		width: 15%;
 		font-size: medium;
 	}

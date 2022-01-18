@@ -29,7 +29,7 @@
 	<SignInput
 		type="password"
 		placeholder="password confirmation"
-		name="confirm"
+		name="confirmation"
 		bind:value={$confirmPass}
 		on:input
 	/>
