@@ -71,3 +71,11 @@ export function isValid(type, input) {
     }
     return { ans, msg }
 }
+
+export const arrOfObjContains = (string, arr) => {
+    console.log(string, arr)
+    return arr.findIndex(
+        // Is the string contained in the object keys?
+        obj => Object.keys(obj).includes(string)
+    ) !== -1
+}

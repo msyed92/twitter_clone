@@ -1,9 +1,11 @@
 <script>
 	import { isValid } from '$lib/utils';
+	import { user } from '../../stores/stores';
+	import { arrOfObjContains as contains } from '$lib/utils';
 
 	export let type, placeholder, name, style;
-	export let dataValid = '';
 	export let match = '';
+	export let dataValid = '';
 	export let value;
 	export let small = '';
 
@@ -22,6 +24,21 @@
 				? 'phone number'
 				: name;
 	};
+	const onChange = () => {
+		console.log($user, 'HERE');
+		console.log(contains(name, $user), 'HERE3');
+		if (contains(name, $user)) {
+			user.set(
+				user.filter((e) => {
+					return e.name != name;
+				})
+			);
+			console.log($user, 'HERE4');
+		}
+		user.set([...$user, { name: name, value: value }]);
+
+		console.log($user, 'HERE2');
+	};
 </script>
 
 <input
@@ -34,6 +51,7 @@
 	{small}
 	{match}
 	on:input={onInput}
+	on:change={onChange}
 	autocomplete="off"
 />
 

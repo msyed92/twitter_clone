@@ -5,14 +5,22 @@
 	export let dataValid = '';
 	export let value;
 	export let small = '';
-
-	$: message = `${small} ${dataValid}`;
 </script>
 
 <div>
-	<Input {type} {placeholder} {name} {value} bind:dataValid bind:small {match} on:input />
+	<Input
+		{type}
+		{placeholder}
+		{name}
+		{value}
+		bind:dataValid
+		bind:small
+		bind:match
+		on:input
+		on:change
+	/>
 	{#if name != 'confirmation'}
-		<small class="float">{message}</small>
+		<small class="float">{small} {dataValid}</small>
 	{:else}
 		<small class="float">{small} {match}</small>
 	{/if}
