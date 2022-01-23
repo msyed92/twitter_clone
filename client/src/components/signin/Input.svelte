@@ -2,17 +2,27 @@
 	import { isValid } from '$lib/utils';
 	import { user } from '../../stores/stores';
 	import { arrOfObjContains as contains } from '$lib/utils';
+	import { onMount } from 'svelte';
 
-	export let type, placeholder, name, style;
+	export let type, placeholder, name, style, input_type;
 	export let match = '';
 	export let dataValid = '';
 	export let value;
 	export let small = '';
 
+	if (name == 'phone') {
+		onMount(() => {
+			dataValid = 'valid';
+		});
+	}
 	const onInput = (e) => {
 		value = e.target.value;
 		dataValid =
-			value == '' || value == null || name == 'confirmation' ? '' : isValid(name, value).msg;
+			name == 'phone' && (value == '' || value == null)
+				? 'valid'
+				: value == '' || value == null || name == 'confirmation'
+				? ''
+				: isValid(name, value);
 		small =
 			value == '' || value == null
 				? ''
@@ -25,19 +35,14 @@
 				: name;
 	};
 	const onChange = () => {
-		console.log($user, 'HERE');
-		console.log(contains(name, $user), 'HERE3');
 		if (contains(name, $user)) {
 			user.set(
-				user.filter((e) => {
+				$user.filter((e) => {
 					return e.name != name;
 				})
 			);
-			console.log($user, 'HERE4');
 		}
 		user.set([...$user, { name: name, value: value }]);
-
-		console.log($user, 'HERE2');
 	};
 </script>
 
@@ -47,6 +52,7 @@
 	{name}
 	{value}
 	class={style}
+	{input_type}
 	{dataValid}
 	{small}
 	{match}

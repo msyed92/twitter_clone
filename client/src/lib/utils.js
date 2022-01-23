@@ -55,6 +55,9 @@ export function isValid(type, input) {
 
     else if (type == "phone") {
         ans = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(input)
+        if (input == '' || null) {
+            ans = true
+        }
     }
 
     else if (type == "firstName" || type == "lastName") {
@@ -69,13 +72,12 @@ export function isValid(type, input) {
     } else {
         msg = "invalid"
     }
-    return { ans, msg }
+    return msg
 }
 
 export const arrOfObjContains = (string, arr) => {
-    console.log(string, arr)
     return arr.findIndex(
         // Is the string contained in the object keys?
-        obj => Object.keys(obj).includes(string)
+        obj => obj.name == string
     ) !== -1
 }

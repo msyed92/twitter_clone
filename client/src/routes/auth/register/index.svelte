@@ -4,7 +4,7 @@
 
 <div class="box">
 	<h1>Twitter 2.0 Sign Up</h1>
-	<Form />
+	<Form on:keypress />
 	<small>Already have an account? <a href="/auth/login"> Sign In</a></small>
 </div>
 
@@ -20,15 +20,13 @@
 		padding-bottom: 1%;
 	}
 	.box {
+		text-align: center;
 		background-color: #202142;
 		color: white;
 		margin: 0;
 		height: 83vh;
 		font-family: 'Be Vietnam Pro', sans-serif;
 		padding: 5%;
-	}
-	div {
-		text-align: center;
 	}
 
 	small {

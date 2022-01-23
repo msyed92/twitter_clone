@@ -16,12 +16,12 @@
 		bind:dataValid
 		bind:small
 		bind:match
-		on:input
+		on:input:input
 		on:change
 	/>
-	{#if name != 'confirmation'}
+	{#if name != 'confirmation' && dataValid == 'invalid'}
 		<small class="float">{small} {dataValid}</small>
-	{:else}
+	{:else if match == 'does not match' && name == 'confirmation'}
 		<small class="float">{small} {match}</small>
 	{/if}
 	<span class="clear" />

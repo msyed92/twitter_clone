@@ -3,23 +3,51 @@
 	import SignInput from './SignInput.svelte';
 	import Button from '../buttons/Button.svelte';
 	import { user } from '../../stores/stores';
-	export let username = '',
-		password = '',
-		confirmPass = '',
-		phone = '',
-		firstName = '',
-		lastName = '',
-		match = '',
-		email = '';
+	export let u, p, e, ph, f, l;
+	$: username =
+		$user.filter((obj) => obj.name == 'username').length <= 0
+			? ''
+			: $user.filter((obj) => obj.name == 'username')[0].value || '';
+	$: password =
+		$user.filter((obj) => obj.name == 'password').length <= 0
+			? ''
+			: $user.filter((obj) => obj.name == 'password')[0].value || '';
+	$: confirmPass =
+		$user.filter((obj) => obj.name == 'confirmation').length <= 0
+			? ''
+			: $user.filter((obj) => obj.name == 'confirmation')[0].value || '';
+	$: email =
+		$user.filter((obj) => obj.name == 'email').length <= 0
+			? ''
+			: $user.filter((obj) => obj.name == 'email')[0].value || '';
+	$: phone =
+		$user.filter((obj) => obj.name == 'phone').length <= 0
+			? ''
+			: $user.filter((obj) => obj.name == 'phone')[0].value || '';
+	$: firstName =
+		$user.filter((obj) => obj.name == 'firstName').length <= 0
+			? ''
+			: $user.filter((obj) => obj.name == 'firstName')[0].value || '';
+	$: lastName =
+		$user.filter((obj) => obj.name == 'lastName').length <= 0
+			? ''
+			: $user.filter((obj) => obj.name == 'lastName')[0].value || '';
+	$: match = '';
+	$: valid = false;
 
 	const passwordMatches = () => {
 		if (password == null || confirmPass == null || password == '' || confirmPass == '') {
-			match = null;
+			console.log(password == confirmPass, 'well here');
+			match = '';
 		} else if (password == confirmPass) {
+			console.log(password == confirmPass, 'here');
+
 			match = 'matches';
 		} else {
+			console.log(password == confirmPass, 'no here');
 			match = 'does not match';
 		}
+		valid = [u, p, e, ph, f, l].every((e) => e == 'valid') && match == 'matches';
 	};
 
 	const reg = async () => {
@@ -27,12 +55,13 @@
 	};
 </script>
 
-<form on:submit|preventDefault={reg} on:input on:change={passwordMatches}>
+<form on:submit|preventDefault={reg} on:keypress={passwordMatches}>
 	<SignInput
 		type="text"
 		placeholder="username"
 		name="username"
 		bind:value={username}
+		bind:dataValid={u}
 		on:input
 		on:change
 	/>
@@ -41,6 +70,7 @@
 		placeholder="password"
 		name="password"
 		bind:value={password}
+		bind:dataValid={p}
 		on:input
 		on:change
 	/>
@@ -53,12 +83,21 @@
 		on:input
 		on:change
 	/>
-	<SignInput type="email" placeholder="email" name="email" bind:value={email} on:input on:change />
+	<SignInput
+		type="email"
+		placeholder="email"
+		name="email"
+		bind:value={email}
+		bind:dataValid={e}
+		on:input
+		on:change
+	/>
 	<SignInput
 		type="tel"
 		placeholder="phone number (optional)"
 		name="phone"
 		bind:value={phone}
+		bind:dataValid={ph}
 		on:input
 		on:change
 	/>
@@ -67,6 +106,7 @@
 		placeholder="first name"
 		name="firstName"
 		bind:value={firstName}
+		bind:dataValid={f}
 		on:input
 		on:change
 	/>
@@ -75,10 +115,11 @@
 		placeholder="last name"
 		name="lastName"
 		bind:value={lastName}
+		bind:dataValid={l}
 		on:input
 		on:change
 	/>
-	<Button class="signup">Sign Up</Button>
+	<Button type="submit" class="signup" disabled={!valid}>Sign Up</Button>
 </form>
 
 <style>
