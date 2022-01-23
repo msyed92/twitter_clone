@@ -1,15 +1,33 @@
 <script>
 	import { login } from '$lib/auth/authenticate';
 	import SignInput from '../../../components/signin/SignInput.svelte';
-	import Button from '../../../components/buttons/Button.svelte';
+	import Button from '../../../components/general/Button.svelte';
+	import { user } from '../../../stores/stores';
+	import Modal from '../../../components/general/modal/Modal.svelte';
 	export let usernameValid, passwordValid;
+	let isOpenModal = false;
+	function openModal() {
+		isOpenModal = true;
+	}
+
+	function closeModal() {
+		isOpenModal = false;
+	}
+
+	$: message = '';
 	$: valid = false;
 	const validate = () => {
 		valid = usernameValid == 'valid' && passwordValid == 'valid';
 	};
 
-	$: username = '';
-	$: password = '';
+	$: username =
+		$user.filter((obj) => obj.name == 'username').length <= 0
+			? ''
+			: $user.filter((obj) => obj.name == 'username')[0].value || '';
+	$: password =
+		$user.filter((obj) => obj.name == 'password').length <= 0
+			? ''
+			: $user.filter((obj) => obj.name == 'password')[0].value || '';
 
 	let loginMethods = ['username', 'email', 'phone number'];
 	$: method = loginMethods[0];
@@ -18,17 +36,23 @@
 	};
 
 	$: methodIndex = loginMethods.findIndex((e) => e === method);
-	//$: result = {};
+
+	const signIn = async () => {
+		await login(username, password)
+			.then((r) => {
+				message = r.msg;
+				openModal();
+				return r;
+			})
+			.catch((e) => {
+				throw e;
+			});
+	};
 </script>
 
 <div class="login">
 	<h1>Twitter 2.0 Sign In</h1>
-	<form
-		on:submit|preventDefault={async () => {
-			await login(username, password);
-		}}
-		on:keypress={validate}
-	>
+	<form on:submit|preventDefault={signIn} on:keypress={validate}>
 		<SignInput
 			type="text"
 			placeholder={method}
@@ -62,6 +86,7 @@
 		<Button type="submit" class="signin" disabled={!valid}>Sign In</Button>
 		<small>Don't have an account? <a href="/auth/register"> Sign Up.</a></small>
 	</form>
+	<Modal {isOpenModal} {message} modalId="signin" on:closeModal={closeModal} />
 </div>
 
 <style>

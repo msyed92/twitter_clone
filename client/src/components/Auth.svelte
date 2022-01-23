@@ -5,7 +5,7 @@
 		const href = site;
 		goto(href, { noscroll: true, keepfocus: true });
 	};
-	import Button from './buttons/Button.svelte';
+	import Button from './general/Button.svelte';
 </script>
 
 <div>

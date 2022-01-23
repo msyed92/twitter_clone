@@ -1,5 +1,5 @@
 <script>
-	import Button from '../buttons/Button.svelte';
+	import Button from '../general/Button.svelte';
 	import { logout } from '$lib/auth/authenticate';
 </script>
 

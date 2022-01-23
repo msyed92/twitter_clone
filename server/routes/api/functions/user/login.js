@@ -5,6 +5,7 @@ const auth = require('../../../auth');
 //Login Function
 exports.login = async (req, res, next) => {
     const { username, password } = req.body
+    console.log(req.body)
     try {
         const user = await api.getUser("username", username).then((result) => { return result.rows[0] }).catch((err) => { next(err) })
         let message = ''

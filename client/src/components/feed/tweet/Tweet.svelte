@@ -1,12 +1,13 @@
 <script>
 	export let user;
-	import Button from '../../buttons/Button.svelte';
+	import Button from '../../general/Button.svelte';
 	import { post } from '$lib/api';
 	import { onMount } from 'svelte';
 	import { newTweet } from '$lib/auth/authenticate';
 	import { autoresize } from 'svelte-textarea-autoresize';
-	import Modal from '../Modal.svelte';
+	import Modal from '../../general/modal/Modal.svelte';
 	let text;
+	const modalId = 'tweet';
 
 	$: isDisabled = text === '' || text == null || text.length >= 280;
 	$: message = 'default';
@@ -54,7 +55,7 @@
 		}}
 	>
 		<Button type="submit" tweet small disabled={isDisabled}>Tweet</Button>
-		<Modal {isOpenModal} {message} on:closeModal={closeModal} />
+		<Modal {isOpenModal} {message} id={modalId} on:closeModal={closeModal} />
 	</form>
 </div>
 

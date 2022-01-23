@@ -1,7 +1,7 @@
 <script>
 	import { register } from '$lib/auth/authenticate';
 	import SignInput from './SignInput.svelte';
-	import Button from '../buttons/Button.svelte';
+	import Button from '../general/Button.svelte';
 	import { user } from '../../stores/stores';
 	export let u, p, e, ph, f, l;
 	$: username =

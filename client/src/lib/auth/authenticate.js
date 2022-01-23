@@ -4,25 +4,18 @@ import { authenticated } from '../../stores/stores'
 
 export async function login(username, password) {
     const response = await post('/user/login', { username, password }).then((r) => { return r }).catch((err) => { throw err })
-    if (!response.success) {
-        const error = (await response).message;
-        return error
+    if (response.success) {
+        window.location = '/';
     }
-    window.location = '/';
     return response
-
 };
 
 export async function logout() {
     const response = await post('/user/logout').then((r) => { return r; }).catch((err) => { throw err; });
-    if (!response.success) {
-        error = (await response).message;
-        return error;
+    if (response.success) {
+        window.location = '/';
     }
-
-    window.location = '/';
-
-    return response;
+    return response
 
 }
 

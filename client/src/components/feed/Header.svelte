@@ -1,6 +1,6 @@
 <script>
 	export let user;
-	import Button from '../buttons/Button.svelte';
+	import Button from '../general/Button.svelte';
 	import { post } from '$lib/api';
 	import { onMount } from 'svelte';
 	onMount(async () => {
