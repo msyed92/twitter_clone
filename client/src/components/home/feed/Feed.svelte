@@ -1,9 +1,9 @@
 <script>
 	import Post from './Post.svelte';
-	import Tweet from './tweet/Tweet.svelte';
-	import { tweets } from '../../stores/stores.js';
+	import Tweet from '../Tweet.svelte';
+	import { tweets } from '../../../stores/stores';
 	import Header from './Header.svelte';
-	import { get } from '../../lib/api';
+	import { get } from '../../../lib/api';
 	import { onMount } from 'svelte';
 
 	$: user = '';
@@ -11,8 +11,8 @@
 	onMount(async () => {
 		const local = await get('/tweets/home/timeline');
 		user = local.id;
+		console.log(user);
 		let tweetList = local.tweets;
-		console.log(tweetList);
 		tweetList.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
 		tweets.set(tweetList);

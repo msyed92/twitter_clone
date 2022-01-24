@@ -2,7 +2,6 @@
 	export let type = 'button';
 	export let disabled = false;
 	export { className as class };
-
 	let className = '';
 </script>
 

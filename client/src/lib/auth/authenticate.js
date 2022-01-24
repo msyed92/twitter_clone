@@ -51,9 +51,6 @@ export const authenticate = async () => {
 
 export async function newTweet(text, id) {
     const response = await post('/tweets/submit', { id: id, content: text }).then((r) => { return r }).catch((err) => { throw err })
-    if (!response.success) {
-        const error = (await response).message;
-        return error
-    }
-    return response;
+
+    return response
 }

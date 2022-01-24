@@ -1,8 +1,8 @@
 <script>
-	import Menu from '../components/menu/Menu.svelte';
-	import Feed from '../components/feed/Feed.svelte';
+	import Menu from '../components/home/menu/Menu.svelte';
+	import Feed from '../components/home/feed/Feed.svelte';
 	import Auth from '../components/Auth.svelte';
-	import Explorer from '../components/explorer/Explorer.svelte';
+	import Explorer from '../components/home/explorer/Explorer.svelte';
 	import { authenticate } from '$lib/auth/authenticate';
 	import { onMount } from 'svelte';
 	import { authenticated } from '../stores/stores';

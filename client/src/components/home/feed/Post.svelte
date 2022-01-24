@@ -38,5 +38,7 @@
 	.tweet {
 		padding-top: 1%;
 		font-weight: 50;
+		padding-left: 0;
+		margin: 0;
 	}
 </style>
