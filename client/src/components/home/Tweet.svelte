@@ -55,7 +55,7 @@
 			text = '';
 		}}
 	>
-		<Button type="submit" class="btn" disabled={isDisabled}>Tweet</Button>
+		<Button type="submit" class="btn" disabled={isDisabled} on:click>Tweet</Button>
 		<Modal {isOpenModal} {message} {modalId} on:closeModal={closeModal} />
 	</form>
 </div>

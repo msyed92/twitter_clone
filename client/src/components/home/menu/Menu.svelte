@@ -36,7 +36,8 @@
 
 <style>
 	.menu {
-		width: 100%;
+		/* width: 33%;
+		position: fixed; */
 		height: 100vh;
 		background-color: #202142;
 		margin-right: 0;

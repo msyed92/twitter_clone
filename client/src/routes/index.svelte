@@ -28,9 +28,9 @@
 
 {#if auth}
 	<div class="grid-container">
-		<Menu />
-		<Feed />
-		<Explorer />
+		<div class="fixed"><Menu /></div>
+		<div><Feed /></div>
+		<div class="fixed"><Explorer /></div>
 	</div>
 {:else}
 	<Auth />
@@ -50,5 +50,11 @@
 	.grid-container {
 		display: grid;
 		grid-template-columns: 1fr 2fr 1fr;
+	}
+
+	.fixed {
+		position: sticky;
+		top: 0;
+		height: 100vh;
 	}
 </style>

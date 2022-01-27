@@ -4,9 +4,16 @@
 	import Who from './Who.svelte';
 </script>
 
-<div>
+<div class="explorer">
 	EXPLORER
 	<Search />
 	<What />
 	<Who />
 </div>
+
+<style>
+	/* .explorer {
+		width: 33%;
+		position: fixed;
+	} */
+</style>

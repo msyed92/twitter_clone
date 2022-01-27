@@ -14,10 +14,11 @@
 		isOpenModal = false;
 	}
 
-	let loginMethods = ['username', 'email', 'phone number'];
+	let loginMethods = ['username', 'email', 'phone'];
 	$: method = loginMethods[0];
-	$: type = method;
-
+	const displayMethod = (method) => {
+		return method == 'phone' ? 'phone number' : method;
+	};
 	$: message = '';
 	$: valid = false;
 	const validate = () => {
@@ -25,9 +26,9 @@
 	};
 
 	$: username =
-		$user.filter((obj) => obj.name == type).length <= 0
+		$user.filter((obj) => obj.name == method).length <= 0
 			? ''
-			: $user.filter((obj) => obj.name == type)[0].value || '';
+			: $user.filter((obj) => obj.name == method)[0].value || '';
 	$: password =
 		$user.filter((obj) => obj.name == 'password').length <= 0
 			? ''
@@ -40,7 +41,7 @@
 	$: methodIndex = loginMethods.findIndex((e) => e === method);
 
 	const signIn = async () => {
-		await login(username, password, type)
+		await login(username, password, method)
 			.then((r) => {
 				message = r.msg;
 				openModal();
@@ -57,7 +58,7 @@
 	<form on:submit|preventDefault={signIn} on:keypress={validate}>
 		<SignInput
 			type="text"
-			placeholder={method}
+			placeholder={displayMethod(method)}
 			name={method}
 			bind:value={username}
 			bind:dataValid={usernameValid}
@@ -71,8 +72,9 @@
 					class="method"
 					on:click={() => {
 						changeMethod(method);
-					}}>Use {method} instead</small
-				>
+					}}
+					>Use {displayMethod(method)} instead
+				</small>
 			{/if}
 		{/each}
 
@@ -127,6 +129,9 @@
 	}
 	small {
 		display: block;
+	}
+	small:hover {
+		color: white;
 	}
 
 	.method {

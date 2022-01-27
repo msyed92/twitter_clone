@@ -8,15 +8,17 @@
 
 	$: user = '';
 	$: tweetList = '';
-	onMount(async () => {
+
+	const tweetUpdate = async () => {
 		const local = await get('/tweets/home/timeline');
 		user = local.id;
 		console.log(user);
-		let tweetList = local.tweets;
+		tweetList = local.tweets;
 		tweetList.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
 		tweets.set(tweetList);
-	});
+	};
+	onMount(tweetUpdate);
 </script>
 
 <div class="feed">
@@ -25,7 +27,7 @@
 	{:then tweetList}
 		{#if user != ''}
 			<Header {user} />
-			<Tweet {user} />
+			<Tweet {user} on:click={tweetUpdate} />
 		{/if}
 		{#if tweetList !== undefined}
 			{#each $tweets as tweet (tweet.id)}
@@ -39,6 +41,7 @@
 
 <style>
 	.feed {
+		/* width: 33%; */
 		background-color: #202142;
 		border-left: 0.05rem solid #c5c6e3;
 		border-right: 0.05rem solid #c5c6e3;
