@@ -2,8 +2,8 @@ import { post, get } from '$lib/api';
 import { authenticated } from '../../stores/stores'
 
 
-export async function login(username, password) {
-    const response = await post('/user/login', { username, password }).then((r) => { return r }).catch((err) => { throw err })
+export async function login(username, password, type) {
+    const response = await post('/user/login', { username, password, type }).then((r) => { return r }).catch((err) => { throw err })
     if (response.success) {
         window.location = '/';
     }

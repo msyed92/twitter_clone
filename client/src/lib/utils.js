@@ -54,7 +54,7 @@ export function isValid(type, input) {
     }
 
     else if (type == "phone") {
-        ans = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(input)
+        ans = /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]{8,14}$/g.test(input)
         if (input == '' || null) {
             ans = true
         }

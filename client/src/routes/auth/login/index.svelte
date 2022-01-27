@@ -14,6 +14,10 @@
 		isOpenModal = false;
 	}
 
+	let loginMethods = ['username', 'email', 'phone number'];
+	$: method = loginMethods[0];
+	$: type = method;
+
 	$: message = '';
 	$: valid = false;
 	const validate = () => {
@@ -21,16 +25,14 @@
 	};
 
 	$: username =
-		$user.filter((obj) => obj.name == 'username').length <= 0
+		$user.filter((obj) => obj.name == type).length <= 0
 			? ''
-			: $user.filter((obj) => obj.name == 'username')[0].value || '';
+			: $user.filter((obj) => obj.name == type)[0].value || '';
 	$: password =
 		$user.filter((obj) => obj.name == 'password').length <= 0
 			? ''
 			: $user.filter((obj) => obj.name == 'password')[0].value || '';
 
-	let loginMethods = ['username', 'email', 'phone number'];
-	$: method = loginMethods[0];
 	const changeMethod = (input) => {
 		method = input;
 	};
@@ -38,7 +40,7 @@
 	$: methodIndex = loginMethods.findIndex((e) => e === method);
 
 	const signIn = async () => {
-		await login(username, password)
+		await login(username, password, type)
 			.then((r) => {
 				message = r.msg;
 				openModal();

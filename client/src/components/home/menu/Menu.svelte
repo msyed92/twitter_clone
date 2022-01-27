@@ -28,9 +28,9 @@
 			<Button class="menu-button">More</Button>
 		</div>
 		<Button class="tweet" tweet>Tweet</Button>
-		<!-- <form on:submit={logout}>
+		<form on:submit={logout}>
 			<Button class="menu-button" type="submit">Sign Out</Button>
-		</form> -->
+		</form>
 	</div>
 </div>
 
