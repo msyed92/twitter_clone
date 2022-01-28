@@ -20,6 +20,8 @@ async function getInteractions(id, user = 0, type = "likes") {
         })
 }
 
+
+
 async function getUser(col, val) {
     const SQL = `SELECT * FROM users WHERE ${col} = $1`
     const values = [val]
@@ -80,6 +82,19 @@ async function getFollowed(id) {
         })
 }
 
+async function getRandomUsers(id) {
+    const SQL = 'SELECT * FROM (SELECT DISTINCT followed_id FROM relationships WHERE follower_id != $1) t ORDER BY random() LIMIT 10'
+    const values = [id]
+    return pool.query(SQL, values)
+        .then((result) => {
+            return result
+        })
+        .catch((err) => {
+            throw err
+        })
+
+}
+
 async function doesFollow(follower, followed) {
     await getFollowers(followed)
         .then((result) => {
@@ -99,3 +114,4 @@ module.exports.getTweets = getTweets
 module.exports.getFollowers = getFollowers
 module.exports.getFollowed = getFollowed
 module.exports.doesFollow = doesFollow
+module.exports.getRandomUsers = getRandomUsers

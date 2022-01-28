@@ -55,6 +55,24 @@ exports.getTL = async (req, response, next) => {
     }
 }
 
+exports.getWhoToFollow = async (req, response, next) => {
+    try {
+        const id = req.user.id
+        const newLocal = await api.getRandomUsers(id).then((u) => { return u.rows }).catch((err) => { throw err })
+        const randoms = newLocal
+        const newLocal_ = await Promise.all(randoms.map(async (p) => {
+            const t = await api.getTweets(p.followed_id)
+            return t
+        }))
+        const tweets = []
+        newLocal_.forEach((e) => {
+            tweets.push(e[Math.floor((Math.random() * e.length))])
+        })
+        return response.status(200).json({ message: "Who to follow tweets found", id: id, tweets: tweets })
+    }
+    catch (err) { throw err }
+}
+
 exports.getUser = async (req, res) => {
     try {
         const id = req.user.id
