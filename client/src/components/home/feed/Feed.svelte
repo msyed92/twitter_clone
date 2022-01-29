@@ -31,11 +31,10 @@
 			<Tweet {user} on:click={tweetUpdate} />
 		{/if}
 
-		{#if tweetList !== undefined && tweetList.length > 0}
-			{#each $tweets as tweet (tweet.id)}
-				<Post {tweet} />
-			{/each}
-		{:else}
+		{#each $tweets as tweet (tweet.id)}
+			<Post {tweet} />
+		{/each}
+		{#if tweetList == undefined || tweetList.length < 100}
 			<Suggest />
 		{/if}
 	{:catch error}
