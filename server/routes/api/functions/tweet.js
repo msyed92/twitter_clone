@@ -3,7 +3,6 @@ const api = require("./api.js")
 
 //submit a new tweet
 exports.submit = async (req, response, next) => {
-    console.log(req.body)
     try {
         const id = req.body.id
         const content = req.body.content
@@ -42,13 +41,15 @@ exports.getTL = async (req, response, next) => {
         const id = req.user.id
         const local = await api.getFollowed(id).then((f) => { return f.rows }).catch((err) => { throw err })
         const follows = local
-
         const local_ = await Promise.all(follows.map(async (p) => {
             const t = await api.getTweets(p.followed_id)
             return t
         }))
         let tweets = local_.flat()
         tweets.sort((a, b) => a.updated_at - b.updated_at);
+        tweets.forEach(async (e) => {
+            e.user_id = await api.getUserFromTweet(e.id).then((r) => { return r[0].user_id })
+        })
         return response.status(200).json({ message: "Timeline tweets found", id: id, tweets: tweets })
     } catch (err) {
         next()

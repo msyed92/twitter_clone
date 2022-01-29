@@ -23,7 +23,6 @@ router.route("/profile/:username")
 
 router.route("/info")
     .post(passport.authenticate('jwt', { session: false }), async (req, res, next) => {
-        console.log(req.body)
         let status;
         let user;
         await api.getUser("id", req.body.id).then((r) => {

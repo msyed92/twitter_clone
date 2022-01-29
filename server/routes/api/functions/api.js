@@ -1,6 +1,6 @@
 const pool = require("../../../config/database").pool
 
-async function getInteractions(id, user = 0, type = "likes") {
+async function getInteractions(id, type = "likes", user = 0,) {
     let SQL = ''
     let values;
     if (user === 0) {
@@ -20,8 +20,6 @@ async function getInteractions(id, user = 0, type = "likes") {
         })
 }
 
-
-
 async function getUser(col, val) {
     const SQL = `SELECT * FROM users WHERE ${col} = $1`
     const values = [val]
@@ -40,6 +38,19 @@ async function registerUser(user) {
     return pool.query(SQL, values)
         .then((result) => {
             return result
+        })
+        .catch((err) => {
+            throw err
+        })
+
+}
+
+async function getUserFromTweet(id) {
+    const SQL = "SELECT user_id FROM tweets WHERE id = $1"
+    const values = [id]
+    return pool.query(SQL, values)
+        .then((result) => {
+            return result.rows
         })
         .catch((err) => {
             throw err
@@ -115,3 +126,4 @@ module.exports.getFollowers = getFollowers
 module.exports.getFollowed = getFollowed
 module.exports.doesFollow = doesFollow
 module.exports.getRandomUsers = getRandomUsers
+module.exports.getUserFromTweet = getUserFromTweet

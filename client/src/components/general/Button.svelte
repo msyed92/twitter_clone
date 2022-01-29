@@ -1,11 +1,12 @@
 <script>
 	export let type = 'button';
+	export let click;
 	export let disabled = false;
 	export { className as class };
 	let className = '';
 </script>
 
-<button {type} {disabled} class={className} on:click>
+<button {type} {disabled} class={className} on:click={click} {click}>
 	<slot />
 </button>
 

@@ -1,24 +1,28 @@
 <script>
+	// components
 	import Post from './Post.svelte';
 	import Tweet from '../Tweet.svelte';
-	import { tweets } from '../../../stores/stores';
 	import Header from './Header.svelte';
 	import Suggest from './Suggest.svelte';
+
+	//stores
+	import { tweets, interactions } from '../../../stores/stores';
+
+	//functions
 	import { get } from '../../../lib/api';
 	import { onMount } from 'svelte';
 
 	$: user = '';
 	$: tweetList = '';
 
-	const tweetUpdate = async () => {
+	async function tweetUpdate() {
 		const local = await get('/tweets/home/timeline');
 		user = local.id;
 		tweetList = local.tweets;
 		tweetList.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-		console.log(tweetList);
-
 		tweets.set(tweetList);
-	};
+		return tweetList;
+	}
 	onMount(tweetUpdate);
 </script>
 
@@ -28,11 +32,11 @@
 	{:then tweetList}
 		{#if user != ''}
 			<Header {user} />
-			<Tweet {user} on:click={tweetUpdate} />
+			<Tweet {user} reload={tweetUpdate} />
 		{/if}
 
 		{#each $tweets as tweet (tweet.id)}
-			<Post {tweet} />
+			<Post {tweet} viewer={user} reload={tweetUpdate} />
 		{/each}
 		{#if tweetList == undefined || tweetList.length < 100}
 			<Suggest />

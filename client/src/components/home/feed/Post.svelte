@@ -1,18 +1,36 @@
 <script>
 	import { getTime } from '$lib/utils';
 	import { post } from '$lib/api';
-	export let tweet;
+
+	export let tweet, viewer, reload;
 	let user;
 	import Block from './Block.svelte';
+	import Heart from './Heart.svelte';
+	$: numLikes = 0;
+	$: numRTs = 0;
+	$: currentUser = false;
 
-	const promise = post('/user/info', { id: tweet.user_id }).then((r) => {
+	const promise = post('/user/info', { id: tweet.user_id }).then(async (r) => {
 		user = r;
+		const inters = await post('/f/interactions', { tweet_id: tweet.id });
+		numLikes = inters.likes.length;
+		numRTs = inters.retweets.length;
+		//numComments = inters.comments.length;
+		currentUser = inters.likes ? inters.likes.some((like) => like.user_id == viewer) : false;
+
 		return user;
 	});
+
+	const like = async () => {
+		await post('/f/like', { tweet_id: tweet.id }).then((r) => {
+			return r;
+		});
+		reload();
+	};
 </script>
 
 <Block>
-	{#await promise then promise}
+	{#await promise then user}
 		<div>
 			<span class="user">{user.name}</span>
 
@@ -22,6 +40,9 @@
 			>
 		</div>
 		<div class="tweet">{tweet.content}</div>
+		<div class="data">
+			<Heart filled={currentUser} num={numLikes} click={like} />
+		</div>
 	{/await}
 </Block>
 

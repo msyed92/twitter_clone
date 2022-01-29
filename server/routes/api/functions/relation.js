@@ -1,25 +1,43 @@
 const pool = require("../../../config/database").pool
 const api = require("./api.js")
 
+exports.getInteractions = async (req, response, next) => {
+    try {
+        const user = req.user.id
+        const tweet = req.body.tweet_id
+        const likes = await api.getInteractions(id = tweet, type = "likes")
+            .then((result) => { return result.rows })
+            .catch((err) => { throw err })
+        const retweets = await api.getInteractions(id = tweet, type = "retweets")
+            .then((result) => { return result.rows })
+            .catch((err) => { throw err })
+        return response.status(200).json({ success: true, tweet: tweet, likes: likes, retweets: retweets })
+
+
+    }
+    catch (err) {
+        throw err
+    }
+}
+
 exports.like = async (req, response, next) => {
     try {
         const liker = req.user.id
         const tweet = req.body.tweet_id
-        const likes = await api.getInteractions(tweet, liker, "likes")
+
+        const likes = await api.getInteractions(tweet, "likes", liker)
             .then((result) => { return result.rows })
             .catch((err) => { throw err })
-        console.log(likes)
-
         let SQL;
         let values;
         let message;
 
         if (likes.length != 0) {
-            SQL = `DELETE FROM likes WHERE tweet_id = $1 AND liked_id = $2 RETURNING *`
+            SQL = `DELETE FROM likes WHERE tweet_id = $1 AND user_id = $2 RETURNING *`
             values = [tweet, liker]
             message = 'unliked'
         } else {
-            SQL = `INSERT INTO likes (tweet_id, created_at, liked_id) VALUES ($1, $2, $3) RETURNING *`
+            SQL = `INSERT INTO likes (tweet_id, created_at, user_id) VALUES ($1, $2, $3) RETURNING *`
             values = [tweet, new Date(Date.now()).toISOString(), liker]
             message = 'liked'
         }

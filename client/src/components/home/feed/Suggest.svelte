@@ -21,7 +21,7 @@
 	<h3>Who to Follow:</h3>
 
 	{#each $whoToFollow as tweet (tweet.id)}
-		<Post {tweet} />
+		<Post {tweet} viewer={user} />
 	{/each}
 </div>
 
