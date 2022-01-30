@@ -15,7 +15,7 @@
 	$: user = '';
 	$: tweetList = '';
 
-	async function tweetUpdate() {
+	async function tweetsUpdate() {
 		const local = await get('/tweets/home/timeline');
 		user = local.id;
 		tweetList = local.tweets;
@@ -23,7 +23,7 @@
 		tweets.set(tweetList);
 		return tweetList;
 	}
-	onMount(tweetUpdate);
+	onMount(tweetsUpdate);
 </script>
 
 <div class="feed">
@@ -32,11 +32,11 @@
 	{:then tweetList}
 		{#if user != ''}
 			<Header {user} />
-			<Tweet {user} reload={tweetUpdate} />
+			<Tweet {user} reload={tweetsUpdate} />
 		{/if}
 
 		{#each $tweets as tweet (tweet.id)}
-			<Post {tweet} viewer={user} reload={tweetUpdate} />
+			<Post {tweet} viewer={user} />
 		{/each}
 		{#if tweetList == undefined || tweetList.length < 100}
 			<Suggest />

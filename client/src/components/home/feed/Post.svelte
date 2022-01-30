@@ -2,30 +2,42 @@
 	import { getTime } from '$lib/utils';
 	import { post } from '$lib/api';
 
-	export let tweet, viewer, reload;
+	export let tweet, viewer;
 	let user;
 	import Block from './Block.svelte';
 	import Heart from './Heart.svelte';
+	import Retweet from './Retweet.svelte';
+	$: interactions = [];
 	$: numLikes = 0;
 	$: numRTs = 0;
-	$: currentUser = false;
+	$: currentUser = {};
+
+	const intersUpdate = async () => {
+		const inters = await post('/f/interactions', { tweet_id: tweet.id });
+		interactions = inters;
+		numLikes = interactions.likes.length;
+		numRTs = interactions.retweets.length;
+		//numComments = inters.comments.length;
+		currentUser.likes = interactions.likes.some((like) => like.user_id == viewer);
+		currentUser.retweets = interactions.retweets.some((rt) => rt.user_id == viewer);
+	};
 
 	const promise = post('/user/info', { id: tweet.user_id }).then(async (r) => {
 		user = r;
-		const inters = await post('/f/interactions', { tweet_id: tweet.id });
-		numLikes = inters.likes.length;
-		numRTs = inters.retweets.length;
-		//numComments = inters.comments.length;
-		currentUser = inters.likes ? inters.likes.some((like) => like.user_id == viewer) : false;
-
+		await intersUpdate();
 		return user;
 	});
 
-	const like = async () => {
-		await post('/f/like', { tweet_id: tweet.id }).then((r) => {
-			return r;
-		});
-		reload();
+	const inter = async (type) => {
+		await post(`/f/${type}`, { tweet_id: tweet.id })
+			.then((r) => {
+				return r;
+			})
+			.then(async () => {
+				await intersUpdate().then((r) => {
+					return r;
+				});
+			});
 	};
 </script>
 
@@ -41,7 +53,22 @@
 		</div>
 		<div class="tweet">{tweet.content}</div>
 		<div class="data">
-			<Heart filled={currentUser} num={numLikes} click={like} />
+			<Heart
+				filled={currentUser.likes}
+				num={numLikes}
+				on:click
+				click={() => {
+					inter('like');
+				}}
+			/>
+			<Retweet
+				filled={currentUser.retweets}
+				num={numRTs}
+				on:click
+				click={() => {
+					inter('retweet');
+				}}
+			/>
 		</div>
 	{/await}
 </Block>
@@ -61,5 +88,9 @@
 		font-weight: 50;
 		padding-left: 0;
 		margin: 0;
+	}
+
+	.data {
+		position: relative;
 	}
 </style>

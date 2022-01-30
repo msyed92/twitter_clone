@@ -29,16 +29,13 @@ exports.like = async (req, response, next) => {
             .then((result) => { return result.rows })
             .catch((err) => { throw err })
         let SQL;
-        let values;
         let message;
-
+        let values = [tweet, liker]
         if (likes.length != 0) {
             SQL = `DELETE FROM likes WHERE tweet_id = $1 AND user_id = $2 RETURNING *`
-            values = [tweet, liker]
             message = 'unliked'
         } else {
-            SQL = `INSERT INTO likes (tweet_id, created_at, user_id) VALUES ($1, $2, $3) RETURNING *`
-            values = [tweet, new Date(Date.now()).toISOString(), liker]
+            SQL = `INSERT INTO likes (tweet_id, created_at, user_id) VALUES ($1, NOW(), $2) RETURNING *`
             message = 'liked'
         }
         await pool.query(SQL, values)
@@ -62,24 +59,22 @@ exports.like = async (req, response, next) => {
 
 exports.retweet = async (req, response, next) => {
     try {
+
         const retweeter = req.user.id
         const tweet = req.body.tweet_id
-        const RTs = await api.getInteractions(tweet, retweeter, "retweets")
+        const RTs = await api.getInteractions(tweet, "retweets", retweeter)
             .then((result) => { return result.rows }).catch((err) => { throw err })
             .catch((err) => { throw err })
-        console.log(RTs)
 
         let SQL;
-        let values;
+        let values = [tweet, retweeter]
         let message;
 
         if (RTs.length != 0) {
             SQL = `DELETE FROM retweets WHERE tweet_id = $1 AND user_id = $2 RETURNING *`
-            values = [tweet, retweeter]
             message = 'unretweeted'
         } else {
-            SQL = `INSERT INTO retweets (tweet_id, created_at, user_id) VALUES ($1, $2, $3) RETURNING *`
-            values = [tweet, new Date(Date.now()).toISOString(), retweeter]
+            SQL = `INSERT INTO retweets (tweet_id, created_at, user_id) VALUES ($1, NOW(), $2) RETURNING *`
             message = 'retweeted'
         }
         await pool.query(SQL, values)

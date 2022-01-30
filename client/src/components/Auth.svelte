@@ -5,6 +5,10 @@
 		const href = site;
 		goto(href, { noscroll: true, keepfocus: true });
 	};
+	const click = () => {
+		direct('/auth/login');
+	};
+
 	import Button from './general/Button.svelte';
 </script>
 
@@ -18,12 +22,7 @@
 		}}>Sign Up with email</Button
 	>
 	<h4>Already have an account?</h4>
-	<Button
-		class="signin"
-		on:click={() => {
-			direct('/auth/login');
-		}}>Sign In</Button
-	>
+	<Button class="signin" on:click {click}>Sign In</Button>
 </div>
 
 <style>
