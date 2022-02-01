@@ -1,5 +1,5 @@
 <script>
-	import Post from './Post.svelte';
+	import Post from './post/Post.svelte';
 	import { get } from '../../../lib/api';
 	import { whoToFollow } from '../../../stores/stores';
 	import { onMount } from 'svelte';

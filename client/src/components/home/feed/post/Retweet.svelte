@@ -75,6 +75,9 @@
 		bottom: 2.5px;
 		position: absolute;
 	}
+	svg:hover {
+		cursor: pointer;
+	}
 	.small {
 		bottom: 2px;
 		left: 8.25%;

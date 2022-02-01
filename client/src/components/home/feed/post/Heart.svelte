@@ -64,4 +64,8 @@
 		border: none;
 		outline: none;
 	}
+
+	svg:hover {
+		cursor: pointer;
+	}
 </style>

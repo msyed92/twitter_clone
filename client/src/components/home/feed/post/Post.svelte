@@ -7,6 +7,7 @@
 	import Block from './Block.svelte';
 	import Heart from './Heart.svelte';
 	import Retweet from './Retweet.svelte';
+	import PostMenu from './PostMenu.svelte';
 	$: interactions = [];
 	$: numLikes = 0;
 	$: numRTs = 0;
@@ -43,13 +44,14 @@
 
 <Block>
 	{#await promise then user}
-		<div>
+		<div class="user-info">
 			<span class="user">{user.name}</span>
 
 			<small class="info">
 				@{user.username} ⋅
 				{getTime(tweet.created_at)}</small
 			>
+			<PostMenu on:click />
 		</div>
 		<div class="tweet">{tweet.content}</div>
 		<div class="data">
@@ -91,6 +93,10 @@
 	}
 
 	.data {
+		position: relative;
+	}
+
+	.user-info {
 		position: relative;
 	}
 </style>

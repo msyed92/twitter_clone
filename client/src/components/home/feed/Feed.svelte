@@ -1,6 +1,6 @@
 <script>
 	// components
-	import Post from './Post.svelte';
+	import Post from './post/Post.svelte';
 	import Tweet from '../Tweet.svelte';
 	import Header from './Header.svelte';
 	import Suggest from './Suggest.svelte';

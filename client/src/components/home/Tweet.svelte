@@ -6,24 +6,26 @@
 	import Button from '../general/Button.svelte';
 	import Modal from '../general/modal/Modal.svelte';
 
-	//functions
+	//imported functions
 	import { post } from '$lib/api';
 	import { onMount } from 'svelte';
 	import { newTweet } from '$lib/auth/authenticate';
 	import { autoresize } from 'svelte-textarea-autoresize';
 
+	//variables
 	let text, current_user;
 	const modalId = 'tweet';
+	let isOpenModal = false;
+
+	//reactive variables
 	$: isDisabled = text === '' || text == null || text.length >= 280;
 	$: message = '';
 	onMount(async () => {
-		console.log(user);
 		const local = await post('/user/info', { id: user });
 		current_user = local;
 	});
 
-	let isOpenModal = false;
-
+	//local functions
 	function openModal() {
 		isOpenModal = true;
 	}
