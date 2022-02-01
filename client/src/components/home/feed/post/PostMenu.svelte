@@ -1,4 +1,5 @@
 <script>
+	export let user, viewer;
 	import ModalMenu from '../../../general/modal/ModalMenu.svelte';
 	let isOpenModal = false;
 
@@ -51,7 +52,7 @@
 		></g
 	></svg
 >
-<ModalMenu {isOpenModal} on:closeModal={closeModal} />
+<ModalMenu {isOpenModal} {user} {viewer} on:click on:closeModal={closeModal} />
 
 <style>
 	svg {

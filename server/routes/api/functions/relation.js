@@ -1,6 +1,24 @@
 const pool = require("../../../config/database").pool
 const api = require("./api.js")
 
+exports.doesFollow = async (req, response, next) => {
+    try {
+        const user = req.body.viewer_id
+        const poster = req.body.id
+        let follows = true;
+        if (user != poster) {
+            follows = await api.doesFollow(user, poster).then((r) => {
+                return r
+            }).catch((e) => { throw e })
+        }
+
+        return response.status(200).json({ success: true, follows: follows })
+    }
+    catch (err) {
+        throw err
+    }
+}
+
 exports.getInteractions = async (req, response, next) => {
     try {
         const user = req.user.id
@@ -98,8 +116,8 @@ exports.retweet = async (req, response, next) => {
 
 exports.follow = async (req, response) => {
     try {
-        const follower = req.user.id
-        const followed = req.body.profile_id
+        const follower = req.body.viewer_id
+        const followed = req.body.id
         const doesFollow = await api.doesFollow(follower, followed)
             .then((res) => { return res })
             .catch((err) => { throw err })

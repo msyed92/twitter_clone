@@ -107,10 +107,11 @@ async function getRandomUsers(id) {
 }
 
 async function doesFollow(follower, followed) {
-    await getFollowers(followed)
+    const SQL = "SELECT follower_id FROM relationships WHERE follower_id = $1 AND followed_id = $2"
+    const values = [follower, followed]
+    return pool.query(SQL, values)
         .then((result) => {
-            let ans = result.map((follower) => follower.follower_id)
-            return ans.includes(follower)
+            return result.rows.length == 1
         })
         .catch((err) => {
             throw err

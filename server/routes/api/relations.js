@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const { like, retweet, follow, getInteractions } = require("./functions/relation")
+const { like, retweet, follow, getInteractions, doesFollow } = require("./functions/relation")
 const passport = require('passport')
 
 router.route("/follow")
@@ -13,5 +13,8 @@ router.route("/retweet")
 
 router.route("/interactions")
     .post(passport.authenticate('jwt', { session: false }), getInteractions)
+
+router.route("/doesfollow")
+    .post(passport.authenticate('jwt', { session: false }), doesFollow)
 
 module.exports = router
