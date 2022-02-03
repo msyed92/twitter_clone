@@ -50,6 +50,7 @@ exports.getTL = async (req, response, next) => {
         tweets.forEach(async (e) => {
             e.user_id = await api.getUserFromTweet(e.id).then((r) => { return r[0].user_id })
         })
+
         return response.status(200).json({ message: "Timeline tweets found", id: id, tweets: tweets })
     } catch (err) {
         next()
@@ -59,7 +60,6 @@ exports.getTL = async (req, response, next) => {
 exports.getWhoToFollow = async (req, response, next) => {
     try {
         const id = req.user.id
-        console.log("HERE")
         const newLocal = await api.getRandomUsers(id).then((u) => { return u.rows }).catch((err) => { throw err })
         const randoms = newLocal
         const newLocal_ = await Promise.all(randoms.map(async (p) => {

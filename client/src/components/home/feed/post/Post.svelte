@@ -1,18 +1,23 @@
 <script>
-	import { getTime } from '$lib/utils';
-	import { post } from '$lib/api';
-
-	export let tweet, viewer;
-	let user;
+	//components
 	import Block from './Block.svelte';
 	import Heart from './Heart.svelte';
 	import Retweet from './Retweet.svelte';
 	import PostMenu from './PostMenu.svelte';
+	import { getTime } from '$lib/utils';
+	import { post } from '$lib/api';
+
+	//exported variables
+	export let tweet, viewer;
+
+	//local variables
+	let user;
 	$: interactions = [];
 	$: numLikes = 0;
 	$: numRTs = 0;
 	$: currentUser = {};
 
+	//local functions
 	const intersUpdate = async () => {
 		const inters = await post('/f/interactions', { tweet_id: tweet.id });
 		interactions = inters;

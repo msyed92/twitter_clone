@@ -1,5 +1,5 @@
 <script>
-	// components
+	//components
 	import Post from './post/Post.svelte';
 	import Tweet from '../Tweet.svelte';
 	import Header from './Header.svelte';
@@ -8,18 +8,19 @@
 	//stores
 	import { tweets, interactions } from '../../../stores/stores';
 
-	//functions
+	//imported functions
 	import { get } from '../../../lib/api';
 	import { onMount } from 'svelte';
 
+	//local variables
 	$: user = '';
 	$: tweetList = '';
 
+	//local functions
 	async function tweetsUpdate() {
 		const local = await get('/tweets/home/timeline');
 		user = local.id;
 		tweetList = local.tweets;
-		tweetList.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 		tweets.set(tweetList);
 		return tweetList;
 	}

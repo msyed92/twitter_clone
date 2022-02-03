@@ -1,8 +1,14 @@
 <script>
-	export let user, viewer;
+	//components
 	import ModalMenu from '../../../general/modal/ModalMenu.svelte';
+
+	//exported variables
+	export let user, viewer;
+
+	//local variables
 	let isOpenModal = false;
 
+	//local functions
 	function openModal() {
 		isOpenModal = true;
 	}

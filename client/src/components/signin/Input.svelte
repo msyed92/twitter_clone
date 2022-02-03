@@ -1,15 +1,18 @@
 <script>
-	import { isValid } from '$lib/utils';
-	import { user } from '../../stores/stores';
-	import { arrOfObjContains as contains } from '$lib/utils';
-	import { onMount } from 'svelte';
-
+	//exported variables
 	export let type, placeholder, name, style, input_type;
 	export let match = '';
 	export let dataValid = '';
 	export let value;
 	export let small = '';
 
+	//imported functions
+	import { isValid } from '$lib/utils';
+	import { user } from '../../stores/stores';
+	import { arrOfObjContains as contains } from '$lib/utils';
+	import { onMount } from 'svelte';
+
+	//local functions
 	if (name == 'phone') {
 		onMount(() => {
 			dataValid = 'valid';

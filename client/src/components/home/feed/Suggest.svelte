@@ -1,12 +1,17 @@
 <script>
+	//components
 	import Post from './post/Post.svelte';
+
+	//imported functions
 	import { get } from '../../../lib/api';
 	import { whoToFollow } from '../../../stores/stores';
 	import { onMount } from 'svelte';
 
+	//local variables
 	$: user = '';
 	$: tweetList = '';
 
+	//local functions
 	const tweetUpdate = async () => {
 		const local = await get('/tweets/home/whotofollow');
 		user = local.id;

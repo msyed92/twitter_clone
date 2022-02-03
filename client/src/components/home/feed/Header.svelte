@@ -1,8 +1,15 @@
 <script>
+	//exported variables
 	export let user;
+
+	//components
 	import Button from '../../general/Button.svelte';
+
+	//imported functions
 	import { post } from '$lib/api';
 	import { onMount } from 'svelte';
+
+	//local functions
 	onMount(async () => {
 		const local = await post('/user/info', { id: user });
 		user = local;

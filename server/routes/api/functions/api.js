@@ -94,10 +94,11 @@ async function getFollowed(id) {
 }
 
 async function getRandomUsers(id) {
-    const SQL = 'SELECT * FROM (SELECT DISTINCT followed_id FROM relationships WHERE follower_id != $1) t ORDER BY random() LIMIT 10'
+    const SQL = 'SELECT DISTINCT followed_id FROM relationships WHERE followed_id NOT IN (SELECT followed_id FROM relationships WHERE follower_id = $1) LIMIT 10'
     const values = [id]
     return pool.query(SQL, values)
         .then((result) => {
+            console.log(result)
             return result
         })
         .catch((err) => {

@@ -1,46 +1,34 @@
 <!-- src/Modal.svelte -->
 <script>
 	//exports
-	export let isOpenModal, user, viewer, isOpenModal_;
+	export let isOpenModal, user, viewer;
 
 	//imported functions
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { post } from '$lib/api';
 
-	//componenets
-	import Modal from './Modal.svelte';
-
 	//local variables
 	const dispatch = createEventDispatcher();
 	let follows;
-
-	//local functions
-	onMount(async () => {
-		const doesFollow = await post('/f/doesfollow', { id: user.id, viewer_id: viewer }).then((r) => {
-			return r;
-		});
-		if (user.id == 13 || viewer == 13) {
-			console.log(doesFollow);
-		}
-		follows = doesFollow.follows;
-	});
-
 	$: followUnfollow = follows ? 'unfollow' : 'follow';
 
 	$: message = user.id == viewer ? 'Edit post' : `${followUnfollow} ${user.username}`;
 
 	let msg = `Error ${followUnfollow}ing ${user.username}`;
 
+	//local functions
+
+	const checkFollow = async () => {
+		const doesFollow = await post('/f/doesfollow', { id: user.id, viewer_id: viewer }).then((r) => {
+			return r;
+		});
+		follows = doesFollow.follows;
+	};
+	onMount(checkFollow);
+
 	function closeModal() {
 		isOpenModal = false;
 		dispatch('closeModal', { isOpenModal });
-	}
-
-	function openModal() {
-		isOpenModal_ = true;
-	}
-	function closeModal_() {
-		isOpenModal_ = false;
 	}
 
 	const handleClick = async () => {
@@ -52,11 +40,11 @@
 					if (r.success && !follows) {
 						msg = `You ${followUnfollow}ed ${user.username}`;
 					}
-					openModal();
-
 					return r;
 				})
-				.then((r) => {});
+				.then(async (r) => {
+					await checkFollow();
+				});
 		}
 	};
 </script>
@@ -65,8 +53,6 @@
 <div id="modal" style="--display: {isOpenModal ? 'block' : 'none'};">
 	<p on:click={handleClick}>{message}</p>
 </div>
-
-<Modal isOpenModal={isOpenModal_} message={msg} modalId="tweet" on:closeModal_={closeModal_} />
 
 <style>
 	#background {

@@ -1,7 +1,10 @@
 <script>
+	//exported variables
 	export let filled = false;
-	let hover = false;
 	export let num, click;
+
+	//local variables
+	let hover = false;
 	$: dString =
 		(filled && !hover) || (!filled && hover)
 			? 'M124.87469,137.6h-80.15469c-13.41062,0 -24.08,-10.66937 -24.08,-24.08v-48.16h-17.2l27.52,-30.96l27.52,30.96h-17.2v48.16c0,2.06938 1.37063,3.44 3.44,3.44h61.92zM168.56,106.64l-27.52,30.96l-27.52,-30.96h17.2v-48.16c0,-2.06937 -1.37062,-3.44 -3.44,-3.44h-61.92l-18.23469,-20.64h80.15469c13.41063,0 24.08,10.66938 24.08,24.08v48.16z'

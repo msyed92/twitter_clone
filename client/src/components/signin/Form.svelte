@@ -1,9 +1,16 @@
 <script>
-	import { register } from '$lib/auth/authenticate';
+	//components
 	import SignInput from './SignInput.svelte';
 	import Button from '../general/Button.svelte';
+
+	//imported functions
+	import { register } from '$lib/auth/authenticate';
 	import { user } from '../../stores/stores';
+
+	//exported variables
 	export let u, p, e, ph, f, l;
+
+	//local variables !! fix this!!
 	$: username =
 		$user.filter((obj) => obj.name == 'username').length <= 0
 			? ''
@@ -35,6 +42,7 @@
 	$: match = '';
 	$: valid = false;
 
+	//local functions
 	const passwordMatches = () => {
 		if (password == null || confirmPass == null || password == '' || confirmPass == '') {
 			console.log(password == confirmPass, 'well here');
