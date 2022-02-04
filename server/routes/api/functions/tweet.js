@@ -2,6 +2,39 @@ const pool = require("../../../config/database").pool
 const api = require("./api.js")
 
 //submit a new tweet
+exports.edit = async (req, response, next) => {
+    try {
+        const user = req.body.user_id
+        const tweet = req.body.tweet_id
+        const content = req.body.content
+
+        const valid = await api.checkUser(user, tweet).then((r) => { return r }).catch((e) => { throw e })
+        console.log(valid)
+
+        if (valid) {
+            const query = 'UPDATE tweets SET content = $1, update_at = NOW() WHERE id = $2'
+            const values = [content, tweet]
+            pool.query(query, values)
+                .then((r) => {
+                    return response.status(200).json({ success: true, msg: `Tweet edited!`, user: user, tweet: content })
+
+                })
+                .catch((err) => {
+                    console.error(err)
+                    return response.status(500).json({
+                        success: false,
+                        msg: "Error editing tweet."
+                    })
+                })
+        }
+
+        return response.status(200).json({ success: false, msg: `Not authorized to edit tweet` })
+
+
+    }
+    catch { }
+}
+
 exports.submit = async (req, response, next) => {
     try {
         const id = req.body.id

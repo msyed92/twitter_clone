@@ -119,6 +119,18 @@ async function doesFollow(follower, followed) {
         })
 }
 
+const checkUser = async (u, t) => {
+    const q = 'SELECT user_id FROM tweets WHERE id = $1'
+    const v = [t]
+    return pool.query(q, v)
+        .then((r) => {
+            return r.rows[0] == u
+        })
+        .catch((err) => {
+            throw err
+        })
+}
+
 
 module.exports.getUser = getUser
 module.exports.getInteractions = getInteractions
@@ -129,3 +141,4 @@ module.exports.getFollowed = getFollowed
 module.exports.doesFollow = doesFollow
 module.exports.getRandomUsers = getRandomUsers
 module.exports.getUserFromTweet = getUserFromTweet
+module.exports.checkUser = checkUser
