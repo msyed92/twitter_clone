@@ -56,7 +56,7 @@
 				@{user.username} ⋅
 				{getTime(tweet.created_at)}</small
 			>
-			<PostMenu {user} {viewer} tweet={tweet.content} on:click />
+			<PostMenu {user} {viewer} {tweet} on:click />
 		</div>
 		<div class="tweet">{tweet.content}</div>
 		<div class="data">

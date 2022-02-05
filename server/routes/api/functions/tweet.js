@@ -7,10 +7,8 @@ exports.del = async (req, response, next) => {
     try {
         const user = req.user.id
         const tweet = req.body.tweet_id
-        const content = req.body.content
 
         const valid = await api.checkUser(user, tweet).then((r) => { return r }).catch((e) => { throw e })
-        console.log(valid)
         if (valid) {
             const query = "DELETE FROM tweets WHERE id = $1 AND user_id = $2"
             values = [tweet, user]
@@ -38,7 +36,6 @@ exports.edit = async (req, response, next) => {
         const content = req.body.content
 
         const valid = await api.checkUser(user, tweet).then((r) => { return r }).catch((e) => { throw e })
-        console.log(valid)
 
         if (valid) {
             const query = 'UPDATE tweets SET content = $1, update_at = NOW() WHERE id = $2'
@@ -55,9 +52,10 @@ exports.edit = async (req, response, next) => {
                         msg: "Error editing tweet."
                     })
                 })
+        } else {
+            return response.status(200).json({ success: false, msg: `Not authorized to edit tweet` })
         }
 
-        return response.status(200).json({ success: false, msg: `Not authorized to edit tweet` })
 
 
     }
@@ -121,7 +119,6 @@ exports.getTL = async (req, response, next) => {
             return ans[1] - ans[0]
 
         });
-        console.log(tweets)
         tweets.forEach(async (e) => {
             e.user_id = await api.getUserFromTweet(e.id).then((r) => { return r[0].user_id })
         })

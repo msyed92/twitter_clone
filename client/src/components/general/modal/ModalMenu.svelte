@@ -48,6 +48,7 @@
 				modalId = 'edit';
 				msg = 'edit';
 			} else {
+				modalId = 'follow';
 				msg = 'delete';
 			}
 			openModal();
@@ -85,7 +86,14 @@
 		>
 	{/if}
 </div>
-<Modal isOpenModal={isOpenModal_} {modalId} message={msg} {tweet} on:closeModal={closeModal_} />
+<Modal
+	isOpenModal={isOpenModal_}
+	{modalId}
+	message={msg}
+	{tweet}
+	on:closeModal={closeModal_}
+	on:click
+/>
 
 <style>
 	#background {

@@ -98,7 +98,6 @@ async function getRandomUsers(id) {
     const values = [id]
     return pool.query(SQL, values)
         .then((result) => {
-            console.log(result)
             return result
         })
         .catch((err) => {
@@ -124,7 +123,7 @@ const checkUser = async (u, t) => {
     const v = [t]
     return pool.query(q, v)
         .then((r) => {
-            return r.rows[0] == u
+            return r.rows[0].user_id == u
         })
         .catch((err) => {
             throw err

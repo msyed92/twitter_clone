@@ -1,28 +1,42 @@
 <!-- src/Modal.svelte -->
 <script>
+	import Button from '../Button.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { autoresize } from 'svelte-textarea-autoresize';
+	import { post } from '../../../lib/api';
 
 	export let isOpenModal, message, modalId, tweet;
+	let tweetText = tweet ? tweet.content : '';
 	const dispatch = createEventDispatcher();
 	function closeModal() {
+		tweetText = tweet ? tweet.content : '';
 		isOpenModal = false;
 		dispatch('closeModal', { isOpenModal });
 	}
+
+	const edit = async () => {
+		await post('/tweets/edit', { tweet_id: tweet.id, content: tweetText });
+	};
 </script>
 
-<div id="background" style="--display: {isOpenModal ? 'block' : 'none'}" on:click={closeModal} />
+<div
+	id="background-{modalId}"
+	style="--display: {isOpenModal ? 'block' : 'none'}"
+	on:click={closeModal}
+/>
 {#if modalId == 'edit'}
-	<textarea
-		id="modal-edit"
-		style="--display: {isOpenModal ? 'block' : 'none'};"
-		use:autoresize
-		type="text"
-		class="tweet-input"
-		autocomplete="off"
-		spellcheck="false"
-		value={tweet}
-	/>
+	<div id="modal-edit" style="--display: {isOpenModal ? 'block' : 'none'};">
+		<span>Edit Your Tweet</span>
+		<textarea
+			use:autoresize
+			type="text"
+			class="tweet-input"
+			autocomplete="off"
+			spellcheck="false"
+			bind:value={tweetText}
+		/>
+		<Button class="edit-btn" click={edit}>Submit</Button>
+	</div>
 {:else}
 	<div id="modal-{modalId}" style="--display: {isOpenModal ? 'block' : 'none'};">
 		<p>{message}</p>
@@ -30,8 +44,21 @@
 {/if}
 
 <style>
-	#background {
+	#background-tweet,
+	#background-follow,
+	#background-signin {
 		display: var(--display);
+		position: fixed;
+		z-index: 1;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	#background-edit {
+		display: var(--display);
+		background-color: hsla(278, 67%, 100%, 0.12);
 		position: fixed;
 		z-index: 1;
 		top: 0;
@@ -54,6 +81,7 @@
 		color: #202142;
 		border-radius: 25px;
 	}
+
 	#modal-follow {
 		display: var(--display);
 		text-align: center;
@@ -61,7 +89,7 @@
 		width: 15%;
 		position: fixed;
 		z-index: 2;
-		top: 50%;
+		top: 85%;
 		left: 50%;
 		transform: translate(-50%, -50%);
 		background: #c5c6e3;
@@ -72,11 +100,11 @@
 		padding: 1%;
 		display: var(--display);
 		text-align: left;
-		height: 15%;
-		width: 30%;
+		min-height: 15%;
+		width: 40%;
 		position: fixed;
 		z-index: 2;
-		top: 50%;
+		top: 35%;
 		left: 50%;
 		transform: translate(-50%, -50%);
 		background: #c5c6e3;
@@ -120,14 +148,13 @@
 		background-color: #c5c6e3;
 		border: none;
 		color: #202142;
-		min-height: 1.5rem;
-		font-size: 1.25rem;
+		min-height: 1rem;
+		font-size: 1.125rem;
 	}
 	textarea:focus {
 		background-color: #c5c6e3;
 		border: none;
 		outline: none;
-		font-size: 1.25rem;
 	}
 
 	::placeholder {
@@ -136,5 +163,23 @@
 		border: none;
 		font-size: 1.25rem;
 		padding-bottom: 0;
+	}
+
+	* :global(.edit-btn) {
+		background-color: #fff;
+		color: #202142;
+		border: #202142 solid 0.1rem;
+		float: right;
+		margin-top: 15%;
+		font-size: 1.125rem;
+		padding: 0.5% 5%;
+	}
+
+	* :global(.edit-btn):hover {
+		background-color: #c5c6e3;
+	}
+
+	span {
+		font-size: 1.125rem;
 	}
 </style>
