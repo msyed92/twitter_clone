@@ -3,7 +3,7 @@
 	import ModalMenu from '../../../general/modal/ModalMenu.svelte';
 
 	//exported variables
-	export let user, viewer;
+	export let user, viewer, tweet;
 
 	//local variables
 	let isOpenModal = false;
@@ -58,7 +58,7 @@
 		></g
 	></svg
 >
-<ModalMenu {isOpenModal} {user} {viewer} on:click on:closeModal={closeModal} />
+<ModalMenu {isOpenModal} {user} {viewer} {tweet} on:click on:closeModal={closeModal} />
 
 <style>
 	svg {

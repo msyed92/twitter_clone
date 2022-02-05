@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const { submit, getUser, getTL, getWhoToFollow, edit } = require("./functions/tweet")
+const { submit, getUser, getTL, getWhoToFollow, edit, del } = require("./functions/tweet")
 const passport = require("passport")
 
 router.route("/submit")
@@ -16,6 +16,9 @@ router.route("/home/whotofollow")
 
 router.route("/edit")
     .post(passport.authenticate('jwt', { session: false }), edit)
+
+router.route("/delete")
+    .post(passport.authenticate('jwt', { session: false }), del)
 
 
 module.exports = router

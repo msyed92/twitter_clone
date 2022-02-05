@@ -1,19 +1,21 @@
 <!-- src/Modal.svelte -->
 <script>
 	//exports
-	export let isOpenModal, user, viewer;
-
+	export let isOpenModal, user, viewer, tweet;
 	//imported functions
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { post } from '$lib/api';
+	import Modal from './Modal.svelte';
 
 	//local variables
 	const dispatch = createEventDispatcher();
 	let follows;
+	$: modalId = 'tweet';
 	$: followUnfollow = follows ? 'unfollow' : 'follow';
-
-	$: message = user.id == viewer ? 'Edit post' : `${followUnfollow} ${user.username}`;
-
+	$: message =
+		user.id == viewer
+			? { edit: 'edit', del: 'delete' }
+			: { edit: `${followUnfollow} ${user.username}` };
 	let msg = `Error ${followUnfollow}ing ${user.username}`;
 
 	//local functions
@@ -25,21 +27,40 @@
 		follows = doesFollow.follows;
 	};
 	onMount(checkFollow);
+	$: isOpenModal_ = false;
+
+	function openModal() {
+		isOpenModal_ = true;
+	}
+
+	function closeModal_() {
+		isOpenModal_ = false;
+	}
 
 	function closeModal() {
 		isOpenModal = false;
 		dispatch('closeModal', { isOpenModal });
 	}
 
-	const handleClick = async () => {
+	const handleClick = async (type = 'follow') => {
 		if (user.id == viewer) {
-			alert('edit post');
+			if (type == 'edit') {
+				modalId = 'edit';
+				msg = 'edit';
+			} else {
+				msg = 'delete';
+			}
+			openModal();
 		} else {
+			modalId = 'follow';
 			await post('/f/follow', { id: user.id, viewer_id: viewer })
 				.then((r) => {
-					if (r.success && !follows) {
+					if (r.success) {
 						msg = `You ${followUnfollow}ed ${user.username}`;
+					} else {
+						msg = r.error;
 					}
+					openModal();
 					return r;
 				})
 				.then(async (r) => {
@@ -51,8 +72,20 @@
 
 <div id="background" style="--display: {isOpenModal ? 'block' : 'none'}" on:click={closeModal} />
 <div id="modal" style="--display: {isOpenModal ? 'block' : 'none'};">
-	<p on:click={handleClick}>{message}</p>
+	<span
+		on:click={() => {
+			handleClick('edit');
+		}}>{message.edit}</span
+	>
+	{#if user.id == viewer}
+		| <span
+			on:click={() => {
+				handleClick('delete');
+			}}>{message.del}</span
+		>
+	{/if}
 </div>
+<Modal isOpenModal={isOpenModal_} {modalId} message={msg} {tweet} on:closeModal={closeModal_} />
 
 <style>
 	#background {
@@ -67,28 +100,24 @@
 
 	#modal {
 		display: var(--display);
-		padding-top: 1%;
+		padding: 1%;
 		text-align: center;
 		z-index: 2;
-		top: 120%;
-		left: 84%;
+		top: 90%;
+		left: 88%;
 		transform: translate(-50%, -50%);
 		color: #c5c6e3;
 		font-weight: lighter;
 		background-color: #202142;
 		border-radius: 8px;
 		border: 1px solid #c5c6e3;
-		width: 25%;
+		width: 15%;
 		position: absolute;
 	}
 
-	#modal:hover {
+	span:hover {
 		cursor: pointer;
 		color: white;
 		font-weight: bolder;
-	}
-
-	p {
-		margin-top: 5%;
 	}
 </style>

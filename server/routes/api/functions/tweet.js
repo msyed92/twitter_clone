@@ -2,9 +2,38 @@ const pool = require("../../../config/database").pool
 const api = require("./api.js")
 
 //submit a new tweet
+
+exports.del = async (req, response, next) => {
+    try {
+        const user = req.user.id
+        const tweet = req.body.tweet_id
+        const content = req.body.content
+
+        const valid = await api.checkUser(user, tweet).then((r) => { return r }).catch((e) => { throw e })
+        console.log(valid)
+        if (valid) {
+            const query = "DELETE FROM tweets WHERE id = $1 AND user_id = $2"
+            values = [tweet, user]
+            pool.query(query, values)
+                .then((r) => {
+                    return response.status(200).json({ success: true, msg: `Tweet deleted!`, user: user })
+
+                })
+                .catch((err) => {
+                    console.error(err)
+                    return response.status(500).json({
+                        success: false,
+                        msg: "Error deleting tweet."
+                    })
+                })
+        }
+    }
+    catch (err) { throw err }
+}
+
 exports.edit = async (req, response, next) => {
     try {
-        const user = req.body.user_id
+        const user = req.user.id
         const tweet = req.body.tweet_id
         const content = req.body.content
 
@@ -79,7 +108,20 @@ exports.getTL = async (req, response, next) => {
             return t
         }))
         let tweets = local_.flat()
-        tweets.sort((a, b) => a.updated_at - b.updated_at);
+        tweets.sort((a, b) => {
+            const ans = []
+            const vals = [[a.updated_at, a.created_at], [b.updated_at, b.created_at]]
+            vals.forEach((e) => {
+                if (e[0] == null) {
+                    ans.push(e[1])
+                } else {
+                    ans.push(e[0])
+                }
+            })
+            return ans[1] - ans[0]
+
+        });
+        console.log(tweets)
         tweets.forEach(async (e) => {
             e.user_id = await api.getUserFromTweet(e.id).then((r) => { return r[0].user_id })
         })
