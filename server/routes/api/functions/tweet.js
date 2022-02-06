@@ -10,20 +10,27 @@ exports.del = async (req, response, next) => {
 
         const valid = await api.checkUser(user, tweet).then((r) => { return r }).catch((e) => { throw e })
         if (valid) {
-            const query = "DELETE FROM tweets WHERE id = $1 AND user_id = $2"
-            values = [tweet, user]
+            let query = "DELETE FROM likes where tweet_id = $1"
+            let values = [tweet]
             pool.query(query, values)
                 .then((r) => {
-                    return response.status(200).json({ success: true, msg: `Tweet deleted!`, user: user })
+                    query = "DELETE FROM retweets where tweet_id = $1"
+                    pool.query(query, values).then((r) => {
+                        query = "DELETE FROM tweets WHERE id = $1 AND user_id = $2"
+                        values = [tweet, user]
+                        pool.query(query, values)
+                            .then((r) => {
+                                return response.status(200).json({ success: true, msg: `Tweet deleted!`, user: user })
 
-                })
-                .catch((err) => {
-                    console.error(err)
+                            }).catch((e) => { throw e })
+                    }).catch((e) => { throw e })
+                }).catch((err) => {
                     return response.status(500).json({
                         success: false,
                         msg: "Error deleting tweet."
                     })
                 })
+
         }
     }
     catch (err) { throw err }

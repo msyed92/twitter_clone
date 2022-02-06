@@ -37,7 +37,7 @@
 		{/if}
 
 		{#each $tweets as tweet (tweet.id)}
-			<Post {tweet} viewer={user} />
+			<Post {tweet} viewer={user} reload={tweetsUpdate}/>
 		{/each}
 		{#if tweetList == undefined || tweetList.length < 100}
 			<Suggest />

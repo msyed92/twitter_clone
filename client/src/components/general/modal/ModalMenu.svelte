@@ -1,7 +1,7 @@
 <!-- src/Modal.svelte -->
 <script>
 	//exports
-	export let isOpenModal, user, viewer, tweet;
+	export let isOpenModal, user, viewer, tweet, reload;
 	//imported functions
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { post } from '$lib/api';
@@ -48,7 +48,7 @@
 				modalId = 'edit';
 				msg = 'edit';
 			} else {
-				modalId = 'follow';
+				modalId = 'delete';
 				msg = 'delete';
 			}
 			openModal();
@@ -87,6 +87,7 @@
 	{/if}
 </div>
 <Modal
+	{reload}
 	isOpenModal={isOpenModal_}
 	{modalId}
 	message={msg}

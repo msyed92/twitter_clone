@@ -5,7 +5,7 @@
 	import { autoresize } from 'svelte-textarea-autoresize';
 	import { post } from '../../../lib/api';
 
-	export let isOpenModal, message, modalId, tweet;
+	export let isOpenModal, message, modalId, tweet, reload;
 	let tweetText = tweet ? tweet.content : '';
 	const dispatch = createEventDispatcher();
 	function closeModal() {
@@ -14,8 +14,12 @@
 		dispatch('closeModal', { isOpenModal });
 	}
 
-	const edit = async () => {
-		await post('/tweets/edit', { tweet_id: tweet.id, content: tweetText });
+	const edit = async (type) => {
+		if (type == 'edit' || type == 'delete') {
+			await post(`/tweets/${type}`, { tweet_id: tweet.id, content: tweetText });
+		}
+		closeModal();
+		reload();
 	};
 </script>
 
@@ -35,7 +39,28 @@
 			spellcheck="false"
 			bind:value={tweetText}
 		/>
-		<Button class="edit-btn" click={edit}>Submit</Button>
+		<Button
+			class="edit-btn"
+			click={() => {
+				edit('edit');
+			}}>Submit</Button
+		>
+	</div>
+{:else if modalId == 'delete'}
+	<div id="modal-delete" style="--display: {isOpenModal ? 'block' : 'none'};">
+		<p>Are you sure you want to delete this tweet?</p>
+		<Button
+			class="delete-btn"
+			click={() => {
+				edit('delete');
+			}}>Delete</Button
+		>
+		<Button
+			class="cancel-btn"
+			click={() => {
+				edit('cancel');
+			}}>Cancel</Button
+		>
 	</div>
 {:else}
 	<div id="modal-{modalId}" style="--display: {isOpenModal ? 'block' : 'none'};">
@@ -56,7 +81,8 @@
 		height: 100vh;
 	}
 
-	#background-edit {
+	#background-edit,
+	#background-delete {
 		display: var(--display);
 		background-color: hsla(278, 67%, 100%, 0.12);
 		position: fixed;
@@ -80,6 +106,21 @@
 		background: #c5c6e3;
 		color: #202142;
 		border-radius: 25px;
+	}
+
+	#modal-delete {
+		display: var(--display);
+		text-align: center;
+		height: 12.5%;
+		width: 30%;
+		position: fixed;
+		z-index: 2;
+		top: 35%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background: #c5c6e3;
+		color: #202142;
+		border-radius: 20px;
 	}
 
 	#modal-follow {
@@ -176,6 +217,30 @@
 	}
 
 	* :global(.edit-btn):hover {
+		background-color: #c5c6e3;
+	}
+
+	* :global(.delete-btn) {
+		margin-right: 3%;
+		background-color: rgba(255, 0, 0, 0.24);
+		color: #202142;
+		border: #202142 solid 0.1rem;
+		padding: 0.5% 5%;
+	}
+
+	* :global(.delete-btn):hover {
+		background-color: #c5c6e3;
+	}
+
+	* :global(.cancel-btn) {
+		margin-left: 3%;
+		background-color: #20214280;
+		color: #202142;
+		border: #202142 solid 0.1rem;
+		padding: 0.5% 5%;
+	}
+
+	* :global(.cancel-btn):hover {
 		background-color: #c5c6e3;
 	}
 

@@ -8,7 +8,7 @@
 	import { post } from '$lib/api';
 
 	//exported variables
-	export let tweet, viewer;
+	export let tweet, viewer, reload;
 
 	//local variables
 	let user;
@@ -56,7 +56,7 @@
 				@{user.username} ⋅
 				{getTime(tweet.created_at)}</small
 			>
-			<PostMenu {user} {viewer} {tweet} on:click />
+			<PostMenu {user} {viewer} {tweet} on:click {reload} />
 		</div>
 		<div class="tweet">{tweet.content}</div>
 		<div class="data">
