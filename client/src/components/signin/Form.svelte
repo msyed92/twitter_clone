@@ -11,48 +11,33 @@
 	export let u, p, e, ph, f, l;
 
 	//local variables !! fix this!!
-	$: username =
-		$user.filter((obj) => obj.name == 'username').length <= 0
+
+	const inputs = [
+		'username',
+		'password',
+		'confirmation',
+		'email',
+		'phone',
+		'firstName',
+		'lastName'
+	];
+
+	$: inputsArray = inputs.map((e) => {
+		return $user.filter((obj) => obj.name == e).length <= 0
 			? ''
-			: $user.filter((obj) => obj.name == 'username')[0].value || '';
-	$: password =
-		$user.filter((obj) => obj.name == 'password').length <= 0
-			? ''
-			: $user.filter((obj) => obj.name == 'password')[0].value || '';
-	$: confirmPass =
-		$user.filter((obj) => obj.name == 'confirmation').length <= 0
-			? ''
-			: $user.filter((obj) => obj.name == 'confirmation')[0].value || '';
-	$: email =
-		$user.filter((obj) => obj.name == 'email').length <= 0
-			? ''
-			: $user.filter((obj) => obj.name == 'email')[0].value || '';
-	$: phone =
-		$user.filter((obj) => obj.name == 'phone').length <= 0
-			? ''
-			: $user.filter((obj) => obj.name == 'phone')[0].value || '';
-	$: firstName =
-		$user.filter((obj) => obj.name == 'firstName').length <= 0
-			? ''
-			: $user.filter((obj) => obj.name == 'firstName')[0].value || '';
-	$: lastName =
-		$user.filter((obj) => obj.name == 'lastName').length <= 0
-			? ''
-			: $user.filter((obj) => obj.name == 'lastName')[0].value || '';
+			: $user.filter((obj) => obj.name == e)[0].value || '';
+	});
+	$: [username, password, confirmPass, email, phone, firstName, lastName] = inputsArray;
 	$: match = '';
 	$: valid = false;
 
 	//local functions
 	const passwordMatches = () => {
 		if (password == null || confirmPass == null || password == '' || confirmPass == '') {
-			console.log(password == confirmPass, 'well here');
 			match = '';
 		} else if (password == confirmPass) {
-			console.log(password == confirmPass, 'here');
-
 			match = 'matches';
 		} else {
-			console.log(password == confirmPass, 'no here');
 			match = 'does not match';
 		}
 		valid = [u, p, e, ph, f, l].every((e) => e == 'valid') && match == 'matches';
