@@ -1,7 +1,7 @@
 const pool = require("../../../config/database").pool
 const api = require("./api.js")
 
-exports.doesFollow = async (req, response, next) => {
+const doesFollow = async (req, response, next) => {
     try {
         const user = req.body.viewer_id
         const poster = req.body.id
@@ -19,7 +19,7 @@ exports.doesFollow = async (req, response, next) => {
     }
 }
 
-exports.getInteractions = async (req, response, next) => {
+const getInteractions = async (req, response, next) => {
     try {
         const user = req.user.id
         const tweet = req.body.tweet_id
@@ -38,7 +38,7 @@ exports.getInteractions = async (req, response, next) => {
     }
 }
 
-exports.like = async (req, response, next) => {
+const like = async (req, response, next) => {
     try {
         const liker = req.user.id
         const tweet = req.body.tweet_id
@@ -67,7 +67,7 @@ exports.like = async (req, response, next) => {
                 })
             })
     } catch (err) {
-        console.log(err)
+        console.error(err)
         response.status(500).json({
             error: "Database error while liking tweet!", //Database connection error
         })
@@ -75,7 +75,7 @@ exports.like = async (req, response, next) => {
     }
 }
 
-exports.retweet = async (req, response, next) => {
+const retweet = async (req, response, next) => {
     try {
 
         const retweeter = req.user.id
@@ -106,7 +106,7 @@ exports.retweet = async (req, response, next) => {
                 })
             })
     } catch (err) {
-        console.log(err)
+        console.error(err)
         response.status(500).json({
             error: "Database error while retweeting tweet!", //Database connection error
         })
@@ -114,7 +114,7 @@ exports.retweet = async (req, response, next) => {
     }
 }
 
-exports.follow = async (req, response) => {
+const follow = async (req, response) => {
     try {
         const follower = req.body.viewer_id
         const followed = req.body.id
@@ -149,10 +149,16 @@ exports.follow = async (req, response) => {
             })
 
     } catch (err) {
-        console.log(err)
+        console.error(err)
         return res.status(500).json({
             error: "Database error while following user!", //Database connection error
         })
 
     }
 }
+
+module.exports.doesFollow = doesFollow
+module.exports.getInteractions = getInteractions
+module.exports.like = like
+module.exports.retweet = retweet
+module.exports.follow = follow

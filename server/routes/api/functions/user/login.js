@@ -3,10 +3,8 @@ const api = require("../api.js")
 const auth = require('../../../auth');
 
 //Login Function
-exports.login = async (req, res, next) => {
-    console.log(req.body)
+const login = async (req, res, next) => {
     const { username, password, type } = req.body
-    console.log(req.body)
     try {
         const user = await api.getUser(type, username).then((result) => { return result.rows[0] }).catch((err) => { next(err) })
         let message = ''
@@ -33,14 +31,14 @@ exports.login = async (req, res, next) => {
         }
 
     } catch (err) {
-        console.log(err)
+        console.error(err)
         return res.status(500).json({
             error: "Database error occurred while signing in!", //Database connection error
         })
     }
 }
 
-exports.logout = async (req, res) => {
+const logout = async (req, res) => {
     if (req.cookies['jwt']) {
         return res.clearCookie('jwt')
             .status(200)
@@ -49,3 +47,6 @@ exports.logout = async (req, res) => {
         return res.status(401).json({ error: 'Invalid jwt' })
     }
 }
+
+module.exports.logout = logout
+module.exports.login = login

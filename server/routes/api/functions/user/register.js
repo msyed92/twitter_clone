@@ -7,7 +7,7 @@ require("dotenv").config({ path: "../../../../../.env" })
 
 //Registration Function
 
-exports.register = async (req, response, next) => {
+const register = async (req, response, next) => {
     const { username, password, email, phone, firstName, lastName } = req.body
     try {
         const checkEmail = await api.getUser("email", email)
@@ -63,9 +63,11 @@ exports.register = async (req, response, next) => {
 
     }
     catch (err) {
-        console.log(err)
+        console.error(err)
         response.status(500).json({
             error: "Database error while registring user!", //Database connection error
         })
     }
 }
+
+module.exports.register = register

@@ -1,6 +1,6 @@
 const pool = require("../../../config/database").pool
 
-async function getInteractions(id, type = "likes", user = 0,) {
+const getInteractions = async (id, type = "likes", user = 0,) => {
     let SQL = ''
     let values;
     if (user === 0) {
@@ -20,7 +20,7 @@ async function getInteractions(id, type = "likes", user = 0,) {
         })
 }
 
-async function getUser(col, val) {
+const getUser = async (col, val) => {
     const SQL = `SELECT * FROM users WHERE ${col} = $1`
     const values = [val]
     return await pool.query(SQL, values)
@@ -32,7 +32,7 @@ async function getUser(col, val) {
         })
 }
 
-async function registerUser(user) {
+const registerUser = async (user) => {
     const SQL = `INSERT INTO users (username, email, phone, first_name, last_name, hash, salt, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`
     const values = [user.username, user.email, user.phone, user.firstName, user.lastName, user.hash, user.salt, user.time]
     return pool.query(SQL, values)
@@ -45,7 +45,7 @@ async function registerUser(user) {
 
 }
 
-async function getUserFromTweet(id) {
+const getUserFromTweet = async (id) => {
     const SQL = "SELECT user_id FROM tweets WHERE id = $1"
     const values = [id]
     return pool.query(SQL, values)
@@ -58,7 +58,7 @@ async function getUserFromTweet(id) {
 
 }
 
-async function getTweets(id) {
+const getTweets = async (id) => {
     const SQL = "SELECT * FROM tweets WHERE user_id = $1"
     const values = [id]
     return pool.query(SQL, values)
@@ -69,7 +69,7 @@ async function getTweets(id) {
             throw err
         })
 }
-async function getFollowers(id) {
+const getFollowers = async (id) => {
     const SQL = "SELECT follower_id FROM relationships WHERE followed_id = $1"
     const values = [id]
     return pool.query(SQL, values)
@@ -81,7 +81,7 @@ async function getFollowers(id) {
         })
 }
 
-async function getFollowed(id) {
+const getFollowed = async (id) => {
     const SQL = "SELECT followed_id FROM relationships WHERE follower_id = $1"
     const values = [id]
     return pool.query(SQL, values)
@@ -93,29 +93,27 @@ async function getFollowed(id) {
         })
 }
 
-async function getRandomUsers(id) {
+const getRandomUsers = async (id) => {
     const SQL = 'SELECT DISTINCT followed_id FROM relationships WHERE followed_id NOT IN (SELECT followed_id FROM relationships WHERE follower_id = $1) LIMIT 10'
     const values = [id]
-    return pool.query(SQL, values)
-        .then((result) => {
-            return result
-        })
-        .catch((err) => {
-            throw err
-        })
+    try {
+        const result = await pool.query(SQL, values);
+        return result;
+    } catch (err) {
+        throw err;
+    }
 
 }
 
-async function doesFollow(follower, followed) {
+const doesFollow = async (follower, followed) => {
     const SQL = "SELECT follower_id FROM relationships WHERE follower_id = $1 AND followed_id = $2"
     const values = [follower, followed]
-    return pool.query(SQL, values)
-        .then((result) => {
-            return result.rows.length == 1
-        })
-        .catch((err) => {
-            throw err
-        })
+    try {
+        const result = await pool.query(SQL, values);
+        return result.rows.length == 1;
+    } catch (err) {
+        throw err;
+    }
 }
 
 const checkUser = async (u, t) => {

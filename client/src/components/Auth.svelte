@@ -19,7 +19,6 @@
 		class="signup"
 		on:click
 		click={() => {
-			console.log('signup');
 			direct('/auth/register');
 		}}>Sign Up with email</Button
 	>

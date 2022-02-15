@@ -3,7 +3,7 @@ const api = require("./api.js")
 
 //submit a new tweet
 
-exports.del = async (req, response, next) => {
+const del = async (req, response, next) => {
     try {
         const user = req.user.id
         const tweet = req.body.tweet_id
@@ -36,7 +36,7 @@ exports.del = async (req, response, next) => {
     catch (err) { throw err }
 }
 
-exports.edit = async (req, response, next) => {
+const edit = async (req, response, next) => {
     try {
         const user = req.user.id
         const tweet = req.body.tweet_id
@@ -69,7 +69,7 @@ exports.edit = async (req, response, next) => {
     catch { }
 }
 
-exports.submit = async (req, response, next) => {
+const submit = async (req, response, next) => {
     try {
         const id = req.body.id
         const content = req.body.content
@@ -93,7 +93,7 @@ exports.submit = async (req, response, next) => {
             })
 
     } catch (err) {
-        console.log(err)
+        console.console.error();(err)
         return response.status(500).json({
             success: false,
             msg: "Database error while submitting tweet!", //Database connection error
@@ -102,7 +102,7 @@ exports.submit = async (req, response, next) => {
     }
 }
 
-exports.getTL = async (req, response, next) => {
+const getTL = async (req, response, next) => {
 
     try {
         const id = req.user.id
@@ -136,7 +136,7 @@ exports.getTL = async (req, response, next) => {
     }
 }
 
-exports.getWhoToFollow = async (req, response, next) => {
+const getWhoToFollow = async (req, response, next) => {
     try {
         const id = req.user.id
         const newLocal = await api.getRandomUsers(id).then((u) => { return u.rows }).catch((err) => { throw err })
@@ -156,7 +156,7 @@ exports.getWhoToFollow = async (req, response, next) => {
     catch (err) { throw err }
 }
 
-exports.getUser = async (req, res) => {
+const getUser = async (req, res) => {
     try {
         const id = req.user.id
         const { username } = req.params
@@ -172,9 +172,16 @@ exports.getUser = async (req, res) => {
 
 
     } catch (err) {
-        console.log(err)
+        console.error(err)
         return res.status(500).json({
             error: "Database error occurred while finding user!", //Database connection error
         })
     }
 }
+
+module.exports.getWhoToFollow = getWhoToFollow
+module.exports.getUser = getUser
+module.exports.getTL = getTL
+module.exports.submit = submit
+module.exports.edit = edit
+module.exports.del = del

@@ -40,7 +40,6 @@ export function getTime(tweet) {
 }
 
 export function isValid(type, input) {
-    console.log(type, input)
     let ans, msg;
     if (type == "username") {
         ans = /^[A-Za-z0-9]\w{3,15}$/.test(input)

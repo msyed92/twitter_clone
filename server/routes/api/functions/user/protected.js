@@ -1,6 +1,6 @@
 const api = require("../api.js")
 
-exports.protected = async (req, res, next) => {
+const protected = async (req, res, next) => {
     await api.getUser("id", req.sub)
         .then((user) => {
             if (!user) { return res.status(401).json({ success: false, message: "Not authorized." }); }
@@ -14,7 +14,7 @@ exports.protected = async (req, res, next) => {
 
 }
 
-exports.profile = async (req, res, next) => {
+const profile = async (req, res, next) => {
     await api.getUser("username", req.params.username)
         .then(async (prof) => {
             const user = prof.rows[0]
@@ -24,3 +24,5 @@ exports.profile = async (req, res, next) => {
             }).catch((err) => { throw err })
         })
 }
+module.exports.protected = protected
+module.exports.profile = profile
