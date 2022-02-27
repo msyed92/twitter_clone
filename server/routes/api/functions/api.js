@@ -1,16 +1,21 @@
 const pool = require("../../../config/database").pool
 
-const getInteractions = async (id, type = "likes", user = 0,) => {
-    let SQL = ''
+const getInteractions = async (id = 0, type = "likes", user = 0,) => {
+    let SQL = `SELECT * FROM ${type} WHERE`
+    let where;
     let values;
-    if (user === 0) {
-        SQL = `SELECT * FROM ${type} WHERE tweet_id = $1`
+    if (user === 0 && id != 0) {
+        where = ` tweet_id = $1`
         values = [id]
+    }
+    else if (id === 0) {
+        where = ` user_id = $1`
+        values = [user]
     } else {
-        SQL = `SELECT * FROM ${type} WHERE tweet_id = $1 AND user_id = $2`
+        where = ` tweet_id = $1 AND user_id = $2`
         values = [id, user]
     }
-
+    SQL = SQL.concat(where)
     return await pool.query(SQL, values)
         .then((result) => {
             return result

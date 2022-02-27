@@ -93,7 +93,7 @@ const submit = async (req, response, next) => {
             })
 
     } catch (err) {
-        console.console.error();(err)
+        console.console.error(); (err)
         return response.status(500).json({
             success: false,
             msg: "Database error while submitting tweet!", //Database connection error
@@ -108,11 +108,11 @@ const getTL = async (req, response, next) => {
         const id = req.user.id
         const local = await api.getFollowed(id).then((f) => { return f.rows }).catch((err) => { throw err })
         const follows = local
-        const local_ = await Promise.all(follows.map(async (p) => {
+        const tweets_ = await Promise.all(follows.map(async (p) => {
             const t = await api.getTweets(p.followed_id)
             return t
         }))
-        let tweets = local_.flat()
+        let tweets = tweets_.flat()
         tweets.sort((a, b) => {
             const ans = []
             const vals = [[a.updated_at, a.created_at], [b.updated_at, b.created_at]]
@@ -126,10 +126,33 @@ const getTL = async (req, response, next) => {
             return ans[1] - ans[0]
 
         });
+
         tweets.forEach(async (e) => {
             e.user_id = await api.getUserFromTweet(e.id).then((r) => { return r[0].user_id })
         })
 
+
+        const RTS_ = await Promise.all(follows.map(async (p) => {
+            const r = await api.getInteractions(0, "retweets", p.followed_id)
+            return r.rows.filter((e) => { e.user_id != id })
+        }))
+        let retweets = RTS_.flat()
+        if (retweets.length > 0) {
+            retweets.sort((a, b) => {
+                const ans = []
+                const vals = [[a.updated_at, a.created_at], [b.updated_at, b.created_at]]
+                vals.forEach((e) => {
+                    if (e[0] == null) {
+                        ans.push(e[1])
+                    } else {
+                        ans.push(e[0])
+                    }
+                })
+                return ans[1] - ans[0]
+
+            })
+            console.log(retweets)
+        }
         return response.status(200).json({ message: "Timeline tweets found", id: id, tweets: tweets })
     } catch (err) {
         next()
