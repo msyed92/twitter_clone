@@ -6,7 +6,7 @@
 <div class="menu">
 	<div class="panel">
 		<div class="buttons">
-			<Button class="menu-button logo"
+			<Button class="menu-button logo" on:click click={() => {}}
 				><img
 					class="twitter-logo"
 					alt="svgImg"
