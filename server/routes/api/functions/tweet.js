@@ -93,7 +93,7 @@ const submit = async (req, response, next) => {
             })
 
     } catch (err) {
-        console.console.error(); (err)
+        console.error()
         return response.status(500).json({
             success: false,
             msg: "Database error while submitting tweet!", //Database connection error
@@ -109,7 +109,7 @@ const getTL = async (req, response, next) => {
         const local = await api.getFollowed(id).then((f) => { return f.rows }).catch((err) => { throw err })
         const follows = local
         const tweets_ = await Promise.all(follows.map(async (p) => {
-            const t = await api.getTweets(p.followed_id)
+            const t = await api.getTweets('user_id', p.followed_id)
             return t
         }))
         let tweets = tweets_.flat()
@@ -133,8 +133,12 @@ const getTL = async (req, response, next) => {
 
 
         const RTS_ = await Promise.all(follows.map(async (p) => {
-            const r = await api.getInteractions(0, "retweets", p.followed_id)
-            return r.rows.filter((e) => { e.user_id != id })
+            if (p.followed_id != id) {
+                const r = await api.getInteractions(0, "retweets", p.followed_id)
+                return r.rows
+            } else {
+                return []
+            }
         }))
         let retweets = RTS_.flat()
         if (retweets.length > 0) {
@@ -151,7 +155,11 @@ const getTL = async (req, response, next) => {
                 return ans[1] - ans[0]
 
             })
-            console.log(retweets)
+            const tweet_ids = tweets.map((t) => { return t.id })
+            retweets = retweets.filter(rt => !tweet_ids.includes(rt.tweet_id))
+            retweets.forEach(async rt => {
+                rt.tweet = await api.getTweets('id', rt.tweet_id)
+            })
         }
         return response.status(200).json({ message: "Timeline tweets found", id: id, tweets: tweets })
     } catch (err) {
@@ -165,8 +173,7 @@ const getWhoToFollow = async (req, response, next) => {
         const newLocal = await api.getRandomUsers(id).then((u) => { return u.rows }).catch((err) => { throw err })
         const randoms = newLocal
         const newLocal_ = await Promise.all(randoms.map(async (p) => {
-            const t = await api.getTweets(p.followed_id)
-            return t
+            return await api.getTweets('user_id', p.followed_id)
         }))
         const tweets = []
         newLocal_.forEach((e) => {
@@ -186,7 +193,7 @@ const getUser = async (req, res) => {
         const local = await api.getUser("username", username.toLowerCase()).then((u) => { return u.rows[0] }).catch((err) => { throw err })
         if (local) {
             const profile = local
-            const local_ = await api.getTweets(profile.id).then((t) => { return t.rows }).catch((err) => { throw err })
+            const local_ = await api.getTweets('user_id', profile.id).then((t) => { return t.rows }).catch((err) => { throw err })
             const tweets = local_
             return res.status(200).json({ success: true, message: "User tweets found", profile: profile.id, id: id, tweets: tweets })
         } else {
