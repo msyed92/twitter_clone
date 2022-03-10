@@ -24,6 +24,7 @@
 		tweets.set(tweetList);
 		return tweetList;
 	}
+
 	onMount(tweetsUpdate);
 </script>
 
@@ -37,7 +38,7 @@
 		{/if}
 
 		{#each $tweets as tweet (tweet.id)}
-			<Post {tweet} viewer={user} reload={tweetsUpdate}/>
+				<Post {tweet} viewer={user} reload={tweetsUpdate} />
 		{/each}
 		{#if tweetList == undefined || tweetList.length < 100}
 			<Suggest />

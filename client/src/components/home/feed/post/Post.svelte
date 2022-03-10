@@ -7,6 +7,9 @@
 	import { getTime } from '$lib/utils';
 	import { post } from '$lib/api';
 
+	//imported functions
+	import { onMount } from 'svelte';
+
 	//exported variables
 	export let tweet, viewer, reload;
 
@@ -18,6 +21,15 @@
 	$: currentUser = {};
 
 	//local functions
+	onMount(() => {
+		{
+			if (tweet.tweet) {
+				tweet = tweet.tweet;
+				console.log(tweet.user_id);
+			}
+		}
+	});
+
 	const intersUpdate = async () => {
 		const inters = await post('/f/interactions', { tweet_id: tweet.id });
 		interactions = inters;

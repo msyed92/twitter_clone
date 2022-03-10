@@ -113,20 +113,6 @@ const getTL = async (req, response, next) => {
             return t
         }))
         let tweets = tweets_.flat()
-        tweets.sort((a, b) => {
-            const ans = []
-            const vals = [[a.updated_at, a.created_at], [b.updated_at, b.created_at]]
-            vals.forEach((e) => {
-                if (e[0] == null) {
-                    ans.push(e[1])
-                } else {
-                    ans.push(e[0])
-                }
-            })
-            return ans[1] - ans[0]
-
-        });
-
         tweets.forEach(async (e) => {
             e.user_id = await api.getUserFromTweet(e.id).then((r) => { return r[0].user_id })
         })
@@ -142,25 +128,32 @@ const getTL = async (req, response, next) => {
         }))
         let retweets = RTS_.flat()
         if (retweets.length > 0) {
-            retweets.sort((a, b) => {
-                const ans = []
-                const vals = [[a.updated_at, a.created_at], [b.updated_at, b.created_at]]
-                vals.forEach((e) => {
-                    if (e[0] == null) {
-                        ans.push(e[1])
-                    } else {
-                        ans.push(e[0])
-                    }
-                })
-                return ans[1] - ans[0]
-
-            })
             const tweet_ids = tweets.map((t) => { return t.id })
             retweets = retweets.filter(rt => !tweet_ids.includes(rt.tweet_id))
-            retweets.forEach(async rt => {
-                rt.tweet = await api.getTweets('id', rt.tweet_id)
-            })
+            retweets = await Promise.all(retweets.map(async (rt) => {
+                return {
+                    ...rt,
+                    tweet: await api.getTweets('id', rt.tweet_id).then((r) => {
+                        return r[0]
+                    })
+                }
+            }))
+            console.log(retweets)
+            tweets = tweets.concat(retweets)
         }
+        tweets = tweets.sort((a, b) => {
+            const ans = []
+            const vals = [[a.update_at, a.created_at], [b.update_at, b.created_at]]
+            vals.forEach((e) => {
+                if (e[0] == null) {
+                    ans.push(e[1])
+                } else {
+                    ans.push(e[0])
+                }
+            })
+            return ans[1] - ans[0]
+
+        })
         return response.status(200).json({ message: "Timeline tweets found", id: id, tweets: tweets })
     } catch (err) {
         next()
