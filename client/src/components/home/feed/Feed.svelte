@@ -20,6 +20,7 @@
 	async function tweetsUpdate() {
 		const local = await get('/tweets/home/timeline');
 		user = local.id;
+		console.log(user);
 		tweetList = local.tweets;
 		tweets.set(tweetList);
 		return tweetList;
@@ -38,7 +39,7 @@
 		{/if}
 
 		{#each $tweets as tweet (tweet.id)}
-				<Post {tweet} viewer={user} reload={tweetsUpdate} />
+			<Post {tweet} viewer={user} reload={tweetsUpdate} />
 		{/each}
 		{#if tweetList == undefined || tweetList.length < 100}
 			<Suggest />

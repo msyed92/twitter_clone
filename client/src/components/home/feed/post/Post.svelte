@@ -14,7 +14,7 @@
 	export let tweet, viewer, reload;
 
 	//local variables
-	let user;
+	let user, retweet;
 	$: interactions = [];
 	$: numLikes = 0;
 	$: numRTs = 0;
@@ -24,8 +24,12 @@
 	onMount(() => {
 		{
 			if (tweet.tweet) {
+				retweet = Object.assign({}, tweet);
+				delete retweet.tweet;
 				tweet = tweet.tweet;
-				console.log(tweet.user_id);
+				tweet.retweet = true;
+			} else {
+				tweet.retweet = false;
 			}
 		}
 	});
@@ -40,27 +44,31 @@
 		currentUser.retweets = interactions.retweets.some((rt) => rt.user_id == viewer);
 	};
 
-	const promise = post('/user/info', { id: tweet.user_id }).then(async (r) => {
-		user = r;
-		await intersUpdate();
-		return user;
-	});
-
 	const inter = async (type) => {
 		await post(`/f/${type}`, { tweet_id: tweet.id })
 			.then((r) => {
 				return r;
 			})
 			.then(async () => {
-				await intersUpdate().then((r) => {
-					return r;
-				});
+				await intersUpdate();
 			});
 	};
+
+	const promise = post('/user/info', { id: tweet.user_id })
+		.then(async (r) => {
+			await intersUpdate();
+			return r;
+		})
+		.then((r) => {
+			user = r;
+			return r;
+		});
 </script>
 
 <Block>
-	{#await promise then user}
+	{#await promise}
+		<p>Loading...</p>
+	{:then user}
 		<div class="user-info">
 			<span class="user">{user.name}</span>
 
