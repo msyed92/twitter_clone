@@ -22,41 +22,46 @@
 
 	//local functions
 	onMount(() => {
-		{
-			if (tweet.tweet) {
-				retweet = Object.assign({}, tweet);
-				delete retweet.tweet;
-				tweet = tweet.tweet;
-				tweet.retweet = true;
-			} else {
-				tweet.retweet = false;
-			}
+		//if retweet reassign as retweet
+
+		if (tweet.tweet) {
+			retweet = Object.assign({}, tweet);
+			tweet = tweet.tweet;
+			delete retweet.tweet;
+			tweet.retweet = true;
+		} else {
+			tweet.retweet = false;
 		}
+		getPostInfo('like');
+		getPostInfo('rewteet');
 	});
 
-	const intersUpdate = async () => {
-		const inters = await post('/f/interactions', { tweet_id: tweet.id });
-		interactions = inters;
-		numLikes = interactions.likes.length;
-		numRTs = interactions.retweets.length;
-		//numComments = inters.comments.length;
-		currentUser.likes = interactions.likes.some((like) => like.user_id == viewer);
-		currentUser.retweets = interactions.retweets.some((rt) => rt.user_id == viewer);
+	const getPostInfo = async (type) => {
+		//update interactions based on user input
+		const intersUpdate = async () => {
+			const inters = await post('/f/interactions', { tweet_id: tweet.id });
+			interactions = inters;
+			numLikes = interactions.likes.length;
+			numRTs = interactions.retweets.length;
+			//numComments = inters.comments.length;
+			currentUser.likes = interactions.likes.some((like) => like.user_id == viewer);
+			currentUser.retweets = interactions.retweets.some((rt) => rt.user_id == viewer);
+		};
+		async () => {
+			await post(`/f/${type}`, { tweet_id: tweet.id })
+				.then((r) => {
+					return r;
+				})
+				.then(async () => {
+					await intersUpdate();
+				});
+		};
 	};
 
-	const inter = async (type) => {
-		await post(`/f/${type}`, { tweet_id: tweet.id })
-			.then((r) => {
-				return r;
-			})
-			.then(async () => {
-				await intersUpdate();
-			});
-	};
-
-	const promise = post('/user/info', { id: tweet.user_id })
+	let promise = post('/user/info', { id: tweet.user_id })
 		.then(async (r) => {
-			await intersUpdate();
+			await getPostInfo('like');
+			await getPostInfo('retweet');
 			return r;
 		})
 		.then((r) => {
@@ -85,7 +90,7 @@
 				num={numLikes}
 				on:click
 				click={() => {
-					inter('like');
+					getPostInfo('like');
 				}}
 			/>
 			<Retweet
@@ -93,7 +98,7 @@
 				num={numRTs}
 				on:click
 				click={() => {
-					inter('retweet');
+					getPostInfo('retweet');
 				}}
 			/>
 		</div>

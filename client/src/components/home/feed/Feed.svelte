@@ -20,7 +20,6 @@
 	async function tweetsUpdate() {
 		const local = await get('/tweets/home/timeline');
 		user = local.id;
-		console.log(user);
 		tweetList = local.tweets;
 		tweets.set(tweetList);
 		return tweetList;
