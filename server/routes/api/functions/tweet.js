@@ -131,14 +131,12 @@ const getTL = async (req, response, next) => {
             const tweet_ids = tweets.map((t) => { return t.id })
             retweets = retweets.filter(rt => !tweet_ids.includes(rt.tweet_id))
             retweets = await Promise.all(retweets.map(async (rt) => {
-                return {
-                    ...rt,
-                    tweet: await api.getTweets('id', rt.tweet_id).then((r) => {
-                        return r[0]
-                    })
-                }
+                let tweet = await api.getTweets('id', rt.tweet_id).then((r) => {
+                    return r[0]
+                });
+                tweet.retweet = rt;
+                return tweet;
             }))
-            console.log(retweets)
             tweets = tweets.concat(retweets)
         }
         tweets = tweets.sort((a, b) => {

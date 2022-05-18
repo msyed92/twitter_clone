@@ -19,6 +19,7 @@
 	//local functions
 	async function tweetsUpdate() {
 		const local = await get('/tweets/home/timeline');
+		console.log(local);
 		user = local.id;
 		console.log(user);
 		tweetList = local.tweets;

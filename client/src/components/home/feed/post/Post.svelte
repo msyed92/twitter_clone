@@ -7,9 +7,6 @@
 	import { getTime } from '$lib/utils';
 	import { post } from '$lib/api';
 
-	//imported functions
-	import { onMount } from 'svelte';
-
 	//exported variables
 	export let tweet, viewer, reload;
 
@@ -21,19 +18,6 @@
 	$: currentUser = {};
 
 	//local functions
-	onMount(() => {
-		{
-			if (tweet.tweet) {
-				retweet = Object.assign({}, tweet);
-				delete retweet.tweet;
-				tweet = tweet.tweet;
-				tweet.retweet = true;
-			} else {
-				tweet.retweet = false;
-			}
-		}
-	});
-
 	const intersUpdate = async () => {
 		const inters = await post('/f/interactions', { tweet_id: tweet.id });
 		interactions = inters;
@@ -59,7 +43,19 @@
 			await intersUpdate();
 			return r;
 		})
-		.then((r) => {
+		.then(async(r)=>{
+			if (tweet.retweet){
+			const test = await post('/user/info',{ id: tweet.retweet.user_id})
+				.then(async (r)=>{
+					await intersUpdate();
+					return r;
+				}).then(async(r) => {
+					retweet = r;
+				})
+			}
+			return r;
+		})
+		.then(async(r) => {
 			user = r;
 			return r;
 		});
@@ -76,6 +72,9 @@
 				@{user.username} ⋅
 				{getTime(tweet.created_at)}</small
 			>
+			{#if tweet.retweet}
+				<small class="retweet">{retweet.username} retweeted</small>
+			{/if}
 			<PostMenu {user} {viewer} {tweet} on:click {reload} />
 		</div>
 		<div class="tweet">{tweet.content}</div>
@@ -123,5 +122,13 @@
 
 	.user-info {
 		position: relative;
+	}
+
+	.retweet{
+		font-weight: lighter;
+		opacity: 0.7;
+		color: #c5c6e3;
+		padding-left: 1%;
+		font-size: .8rem;
 	}
 </style>
